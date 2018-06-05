@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CalendarLayout">
+
+        <attr name="cl_min_year" format="integer|reference" />
+        <attr name="cl_min_year_month" format="integer|reference" />
+        <attr name="cl_max_year" format="integer|reference" />
+        <attr name="cl_max_year_month" format="integer|reference" />
+
+        <attr name="cl_select_year" format="integer|reference" />
+        <attr name="cl_select_month" format="integer|reference" />
+        <attr name="cl_select_day" format="integer|reference" />
+
+        <attr name="cl_bg_select_color" format="color|reference" />
+        <attr name="cl_bg_today_color" format="color|reference" />
+
+        <attr name="cl_day_text_color_today" format="color" />
+        <attr name="cl_day_lunar_text_color_today" format="color" />
+        <attr name="cl_day_text_color_select" format="color" />
+        <attr name="cl_day_lunar_text_color_select" format="color" />
+
+        <attr name="cl_month_text_color_current" format="color" />
+        <attr name="cl_month_text_color_other" format="color" />
+        <attr name="cl_month_lunar_text_color_current" format="color" />
+        <attr name="cl_month_lunar_text_color_other" format="color" />
+
+        <attr name="week_background" format="color" />
+        <attr name="week_line_background" format="color" />
+        <attr name="week_text_color" format="color" />
+
+        <attr name="month_view" format="string" /><!--完全自定义月视图-->
+
+        <attr name="week_view" format="string" /> <!--完全自定义周视图-->
+        <attr name="week_bar_height" format="dimension" /> <!--星期栏的高度-->
+        <attr name="week_bar_view" format="string" /> <!--如果需要的话使用自定义星期栏-->
+
+        <attr name="scheme_text" format="string" />
+        <attr name="day_text_size" format="dimension" />
+        <attr name="lunar_text_size" format="dimension" />
+        <attr name="calendar_height" format="dimension" />
+        <attr name="scheme_text_color" format="color" />
+        <attr name="scheme_month_text_color" format="color" />
+        <attr name="scheme_lunar_text_color" format="color" />
+        <attr name="scheme_theme_color" format="color" />
+
+        <attr name="selected_text_color" format="color" />
+        <attr name="selected_lunar_text_color" format="color" />
+
+    </declare-styleable>
+</resources>

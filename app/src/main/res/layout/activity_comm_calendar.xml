@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/green_100"
+        android:gravity="center"
+        android:textColor="@color/color_black"
+        android:textSize="18sp" />
+
+    <com.lib.calendar.CalendarLayout
+        android:id="@+id/calendar"
+        android:layout_width="match_parent"
+        android:layout_height="360dp"
+        android:layout_gravity="center"
+        android:background="@color/green_100"
+        android:padding="5dp"
+        app:cl_bg_select_color="@color/color_bg_theme_press"
+        app:cl_bg_today_color="@color/color_bg_theme"
+        app:cl_day_lunar_text_color_today="@color/color_bg_peach"
+        app:cl_day_text_color_today="@color/color_bg_peach"
+        app:cl_max_year="2018"
+        app:cl_max_year_month="11"
+        app:cl_min_year="2017"
+        app:cl_min_year_month="4"
+        app:cl_month_lunar_text_color_current="@color/color_black"
+        app:cl_month_lunar_text_color_other="@color/color_font_gray40"
+        app:cl_month_text_color_current="@color/color_black"
+        app:cl_month_text_color_other="@color/color_font_gray40"
+        app:lunar_text_size="10sp"
+        app:scheme_text_color="@color/color_black"
+        app:scheme_theme_color="@color/color_bg_theme"
+        app:selected_lunar_text_color="@color/color_white"
+        app:selected_text_color="@color/color_white" />
+
+</LinearLayout>

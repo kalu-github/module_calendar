@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ffffff</color>
+    <color name="colorPrimaryDark">#ffffff</color>
+    <color name="colorAccent">#ffffff</color>
+
+    <color name="line_color">#e7e7e7</color>
+    <color name="content_background">#f2f2f2</color>
+    <color name="solar_background">#009988</color>
+
+    <color name="mn_scan_viewfinder_laser">#FFff3535</color> <!-- Android standard ICS color -->
+    <color name="mn_scan_viewfinder_mask">#a2000000</color>
+
+    <color name="red_100">#F3575B</color>
+    <color name="green_100">#64C67A</color>
+
+    <color name="color_bg_background">#f2f2f2</color>  <!--95%的灰-->
+    <color name="color_bg_theme">#13ad67</color>  <!--翡翠绿-->
+    <color name="color_bg_theme_press">#dd13ad67</color>  <!--翡翠绿-->
+    <color name="color_bg_press">#11000000</color>  <!--翡翠绿-->
+    <color name="color_bg_orange">#ff9e21</color>  <!--橙色-->
+    <color name="color_bg_orange_press">#ddff9e21</color>  <!--橙色-->
+    <color name="color_bg_peach">#ea5757</color>  <!--桃红色-->
+    <color name="color_bg_peach_press">#66ea5757</color>  <!--桃红色-->
+    <color name="color_bg_blue">#1296db</color>  <!--蓝色-->
+    <color name="color_font_gray20">#333333</color>
+    <color name="color_font_gray40">#666666</color>
+    <color name="color_font_gray60">#999999</color>
+    <color name="color_font_gray80">#cccccc</color>
+    <color name="color_font_gray92">#ebebeb</color>
+    <color name="color_font_gray94">#f0f0f0</color>
+    <color name="color_font_gray96">#f5f5f5</color>
+    <color name="color_font_gray100">#000000</color>
+    <color name="color_line_gray">#66e6e6e6</color>
+
+
+    <color name="color_white">#FFFFFF</color>
+    <color name="color_white_pressed">#ddFFFFFF</color>
+    <color name="color_black">#000000</color>
+    <color name="color_transparent">#00000000</color>
+
+    <!--所有黑色文本-->
+    <color name="text">#333333</color>
+    <!--所有灰色文本-->
+    <color name="text_gray">#999999</color>
+
+</resources>
