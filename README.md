@@ -6,7 +6,7 @@
 ## 自定义属性
 ```
  <declare-styleable name="CalendarLayout">
-     <!-- 最小年份 -->
+    <!-- 最小年份 -->
     <attr name="cl_min_year" format="integer|reference" />
     <!-- 最小年份的月份 -->
     <attr name="cl_min_year_month" format="integer|reference" />
