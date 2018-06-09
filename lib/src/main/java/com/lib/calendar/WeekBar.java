@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -20,7 +19,9 @@ import java.util.List;
 public final class WeekBar extends View {
 
     private final List<String> mData = Arrays.asList("日", "一", "二", "三", "四", "五", "六");
-    private final Paint mPaint = new Paint();
+
+    private int textColor = Color.BLACK;
+    private float textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 16f, getResources().getDisplayMetrics());
 
     public WeekBar(Context context) {
         super(context);
@@ -34,32 +35,31 @@ public final class WeekBar extends View {
         super(context, attrs, defStyleAttr);
     }
 
+    public void setTextSize(float textSize) {
+        this.textSize = textSize;
+    }
+
+    public void setTextColor(int textColor) {
+        this.textColor = textColor;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
 
-        mPaint.setAntiAlias(true);
-        mPaint.setFilterBitmap(true);
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeJoin(Paint.Join.ROUND);
-        mPaint.setFakeBoldText(false);
-        mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,  16f, getResources().getDisplayMetrics()));
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setTextAlign(Paint.Align.CENTER);
 
-        float font = (mPaint.getFontMetrics().bottom - mPaint.getFontMetrics().top) / 3;
+        final Paint textPaint = CalendarPaint.getTextPaint(textColor, textSize);
+        float font = (textPaint.getFontMetrics().bottom - textPaint.getFontMetrics().top) / 3;
 
         final int width = getWidth() / 7;
         final int centerY = getHeight() / 2;
         for (int i = 0; i < 7; i++) {
-            // mPaint.setColor(i == 0 || i == 6 ? Color.RED : Color.BLACK);
-            mPaint.setColor(Color.BLACK);
             float x = width * i + width / 2;
-            canvas.drawText(mData.get(i), x, centerY + font, mPaint);
+            canvas.drawText(mData.get(i), x, centerY + font, textPaint);
         }
 
         final float line = 2f * getResources().getDisplayMetrics().density;
-        mPaint.setColor(Color.parseColor("#66e6e6e6"));
-        canvas.drawLine(0, line, getWidth(), line, mPaint);
-        canvas.drawLine(0, getHeight() - line, getWidth(), getHeight(), mPaint);
+        textPaint.setColor(Color.parseColor("#66e6e6e6"));
+        canvas.drawLine(0, line, getWidth(), line, textPaint);
+        canvas.drawLine(0, getHeight() - line, getWidth(), getHeight(), textPaint);
     }
 }

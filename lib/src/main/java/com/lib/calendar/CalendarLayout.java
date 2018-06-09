@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -24,10 +23,13 @@ import java.lang.reflect.Constructor;
  */
 public final class CalendarLayout extends LinearLayout {
 
-    private final CalendarDelegate mDelegate = new CalendarDelegate();
     private final CalendartManager mPagerLayoutManager = new CalendartManager(getContext().getApplicationContext(), LinearLayout.HORIZONTAL, false);
 
     private int selectYear = -1, selectMonth = -1, selectDay = -1;
+
+    public final static int MIN_YEAR = 1900;
+    public final static int MAX_YEAR = 2099;
+    private int minYear = MIN_YEAR, maxYear = MAX_YEAR, minYearMonth = 1, maxYearMonth = 12;
 
     public CalendarLayout(@NonNull Context context) {
         this(context, null);
@@ -35,8 +37,13 @@ public final class CalendarLayout extends LinearLayout {
 
     public CalendarLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        mDelegate.setAttributeSet(context, attrs);
         setOrientation(LinearLayout.VERTICAL);
+
+        String weekClassname = "";
+        int weekTextcolor = Color.BLACK;
+        int weekBgcolor = Color.TRANSPARENT;
+        int weekHeight = (int) (40 * getResources().getDisplayMetrics().density);
+        float weekTextsize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 16f, getResources().getDisplayMetrics());
 
         TypedArray typed = null;
         try {
@@ -44,12 +51,75 @@ public final class CalendarLayout extends LinearLayout {
             selectYear = typed.getInt(R.styleable.CalendarLayout_cl_select_year, selectYear);
             selectMonth = typed.getInt(R.styleable.CalendarLayout_cl_select_month, selectMonth);
             selectDay = typed.getInt(R.styleable.CalendarLayout_cl_select_day, selectDay);
+
+            minYear = typed.getInt(R.styleable.CalendarLayout_cl_min_year, minYear);
+            maxYear = typed.getInt(R.styleable.CalendarLayout_cl_max_year, maxYear);
+            if (minYear <= MIN_YEAR) minYear = MIN_YEAR;
+            if (maxYear >= MAX_YEAR) maxYear = MAX_YEAR;
+
+            minYearMonth = typed.getInt(R.styleable.CalendarLayout_cl_min_year_month, minYearMonth);
+            maxYearMonth = typed.getInt(R.styleable.CalendarLayout_cl_max_year_month, maxYearMonth);
+
+            weekHeight = (int) typed.getDimension(R.styleable.CalendarLayout_cl_week_height, weekHeight);
+            weekBgcolor = typed.getColor(R.styleable.CalendarLayout_cl_week_bg_color, weekBgcolor);
+            weekTextcolor = typed.getColor(R.styleable.CalendarLayout_cl_week_text_color, weekTextcolor);
+            weekTextsize = typed.getDimension(R.styleable.CalendarLayout_cl_week_text_size, weekTextsize);
+            weekClassname = typed.getString(R.styleable.CalendarLayout_cl_week_class);
         } catch (Exception e) {
             Log.e("", e.getMessage(), e);
         } finally {
             if (null == typed) return;
             typed.recycle();
         }
+
+        // 1.星期栏
+        WeekBar weekBar;
+        try {
+            if (TextUtils.isEmpty(weekClassname)) {
+                weekBar = new WeekBar(getContext());
+            } else {
+                final Constructor constructor = Class.forName(weekClassname).getConstructor(Context.class);
+                weekBar = (WeekBar) constructor.newInstance(getContext().getApplicationContext());
+            }
+        } catch (Exception e) {
+            Log.e("", e.getMessage(), e);
+            weekBar = new WeekBar(getContext());
+        }
+        LinearLayout.LayoutParams weekBarParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, weekHeight);
+        weekBar.setLayoutParams(weekBarParams);
+        weekBar.setBackgroundColor(weekBgcolor);
+        weekBar.setTextSize(weekTextsize);
+        weekBar.setTextColor(weekTextcolor);
+        addView(weekBar);
+
+        // 2.日期
+        final RecyclerView recyclerView = new RecyclerView(getContext().getApplicationContext());
+        recyclerView.setBackgroundColor(Color.WHITE);
+        LinearLayout.LayoutParams paramsRecyclerView = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        paramsRecyclerView.setMargins(10, 10, 10, 10);
+        recyclerView.setLayoutParams(paramsRecyclerView);
+        addView(recyclerView);
+
+        recyclerView.setLayoutManager(mPagerLayoutManager);
+        recyclerView.setAdapter(new CalendarAdapter());
+        mPagerLayoutManager.setOnPagerChangeListener(new CalendartManager.OnPagerChangeListener() {
+
+            @Override
+            public void onPageSelect(int position, boolean isTop, boolean isBottom) {
+                if (null == mOnCalendarChangeListener) return;
+                final int year = (position + minYearMonth - 1) / 12 + minYear;
+                final int month = ((position + minYearMonth - 1) % 12 + 1);
+                mOnCalendarChangeListener.onCalendarChange(year, month, 1, false);
+            }
+
+            @Override
+            public void onPageDetach(boolean isNext, int position) {
+            }
+
+            @Override
+            public void onPageFinish() {
+            }
+        });
     }
 
     @Override
@@ -68,85 +138,10 @@ public final class CalendarLayout extends LinearLayout {
         return super.dispatchTouchEvent(ev);
     }
 
-    @Override
-    protected void onFinishInflate() {
-
-        // 1.星期栏
-        if (TextUtils.isEmpty(mDelegate.getWeekBarClass())) {
-            final WeekBar weekBar = new WeekBar(getContext());
-            LinearLayout.LayoutParams weekBarParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp2px(getContext(), 40));
-            weekBar.setLayoutParams(weekBarParams);
-            addView(weekBar);
-        } else {
-            try {
-                Class cls = Class.forName(mDelegate.getWeekBarClass());
-                Constructor constructor = cls.getConstructor(Context.class);
-                final WeekBar weekBar = (WeekBar) constructor.newInstance(getContext());
-                addView(weekBar);
-            } catch (Exception e) {
-                Log.e("", e.getMessage(), e);
-            }
-        }
-
-        // 2.日期
-        final RecyclerView recyclerView = new RecyclerView(getContext().getApplicationContext());
-        recyclerView.setBackgroundColor(Color.WHITE);
-        LinearLayout.LayoutParams paramsRecyclerView = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        paramsRecyclerView.setMargins(10, 10, 10, 10);
-        recyclerView.setLayoutParams(paramsRecyclerView);
-        addView(recyclerView);
-
-        recyclerView.setLayoutManager(mPagerLayoutManager);
-        recyclerView.setAdapter(new CalendarAdapter());
-        mPagerLayoutManager.setOnPagerChangeListener(new CalendartManager.OnPagerChangeListener() {
-
-            @Override
-            public void onPageSelect(int position, boolean isTop, boolean isBottom) {
-                final int year = (position + mDelegate.getMinYearMonth() - 1) / 12 + mDelegate.getMinYear();
-                final int month = ((position + mDelegate.getMinYearMonth() - 1) % 12 + 1);
-
-                Log.e("onCalendarChange", "position = " + position + ", year = " + year + ", month = " + month + ", isTop = " + isTop + ", isBottom = " + isBottom);
-
-//                Calendar calendar = new Calendar();
-//                calendar.setYear();
-//                calendar.setMonth((position + mDelegate.getMinYearMonth() - 1) % 12 + 1);
-//                calendar.setDay(1);
-//                calendar.setCurrentMonth(calendar.getYear() == mDelegate.getTodayCalendar().getYear() &&
-//                        calendar.getMonth() == mDelegate.getTodayCalendar().getMonth());
-//                calendar.setSelect(calendar.equals(mDelegate.getTodayCalendar()));
-//                LunarUtil.setupLunarCalendar(calendar);
-
-//                if (!calendar.isCurrentMonth()) {
-//                    mDelegate.mSelectedCalendar = calendar;
-//                } else {
-//                    mDelegate.mSelectedCalendar = mDelegate.getTodayCalendar();
-//                }
-
-                if (null == mOnCalendarChangeListener) return;
-                mOnCalendarChangeListener.onCalendarChange(year, month, 1, false);
-            }
-
-            @Override
-            public void onPageDetach(boolean isNext, int position) {
-            }
-
-            @Override
-            public void onPageFinish() {
-            }
-        });
-
-        super.onFinishInflate();
-    }
-
     public void setSelectDate(int year, int month, int day) {
         selectYear = year;
         selectMonth = month;
         selectDay = day;
-
-        final int minYear = mDelegate.getMinYear();
-        final int minYearMonth = mDelegate.getMinYearMonth();
-//        Log.e("onCalendarChange", "minYear = " + minYear + ", minYearMonth = " + minYearMonth);
-//        Log.e("onCalendarChange", "year = " + year + ", month = " + month);
 
         if (year < minYear) {
             year = minYear;
@@ -180,48 +175,24 @@ public final class CalendarLayout extends LinearLayout {
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            try {
-                final String className = mDelegate.getMonthViewClass();
-                if (TextUtils.isEmpty(className)) {
-                    final BaseView view = new MonthView(getContext().getApplicationContext());
-                    view.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                    return new RecyclerHolder(view);
-                } else {
-                    final Class cls = Class.forName(className);
-                    final Constructor constructor = cls.getConstructor(Context.class);
-                    final BaseView view = (BaseView) constructor.newInstance(getContext());
-                    view.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                    return new RecyclerHolder(view);
-                }
-            } catch (Exception e) {
-                Log.e("", e.getMessage(), e);
-                final BaseView view = new MonthView(getContext().getApplicationContext());
-                view.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                return new RecyclerHolder(view);
-            }
+            final BaseView view = new MonthView(getContext().getApplicationContext());
+            view.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            return new RecyclerHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
-//            if (mPagerLayoutManager.findFirstVisibleItemPosition() == position)
-//                return;
 
             final MonthView view = (MonthView) holder.itemView;
             if (selectYear != -1 && selectMonth != -1 && selectDay != -1) {
                 view.setSelectCalendar(selectYear, selectMonth, selectDay);
             }
 
-            final int minYear = mDelegate.getMinYear();
-            final int minYearMonth = mDelegate.getMinYearMonth();
             final int number1 = (position + minYearMonth) / 12;
             final int number2 = (position + minYearMonth) % 12;
             int year = minYear + number1;
             int month = number2;
             if (month == 0) return;
-
-            // Log.e("onCalendarChange22", "position = " + position + ", year = " + year + ", month = " + month);
-            view.setup(mDelegate);
             view.setDate(year, month);
         }
 
@@ -233,15 +204,6 @@ public final class CalendarLayout extends LinearLayout {
                 return (int) getTag();
             }
 
-            int maxYear = mDelegate.getMaxYear();
-            int minYear = mDelegate.getMinYear();
-            int minYearMonth = mDelegate.getMinYearMonth();
-            int maxYearMonth = mDelegate.getMaxYearMonth();
-
-            if (minYear >= maxYear) {
-                maxYear = minYear;
-            }
-
             if (minYear == maxYear) {
                 if (minYearMonth >= maxYearMonth || Math.abs(maxYearMonth - minYearMonth) == 1) {
                     return 1;
@@ -250,7 +212,6 @@ public final class CalendarLayout extends LinearLayout {
                 }
             } else {
                 final int count = 12 * (maxYear - minYear - 1) + (12 - minYearMonth) + maxYearMonth;
-                // Log.e("getItemCount", "count = " + count + ", minYear = " + minYear + ", minYearMonth = " + minYearMonth + ", maxYear = " + maxYear + ", maxYearMonth = " + maxYearMonth);
                 setTag(count);
                 return count;
             }
@@ -263,24 +224,6 @@ public final class CalendarLayout extends LinearLayout {
         }
     }
 
-    private final float sp2px(Context context, float sp) {
-
-        final DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, metrics);
-    }
-
-    private final float dp2px(Context context, float dp) {
-
-        final DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return dp * metrics.density;
-    }
-
-    private final int dp2px(Context context, int dp) {
-
-        final DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return (int) (dp * metrics.density);
-    }
-
     /**********************************************************************************************/
 
     private OnCalendarChangeListener mOnCalendarChangeListener;
@@ -290,7 +233,6 @@ public final class CalendarLayout extends LinearLayout {
     }
 
     public interface OnCalendarChangeListener {
-
         void onCalendarChange(int year, int month, int day, boolean isClick);
     }
 }

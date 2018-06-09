@@ -12,8 +12,6 @@ final class MonthView extends BaseView {
 
     // 圆点半径, 日期底部
     private float mDotRadius = (3 * getResources().getDisplayMetrics().density);
-    // 圆点底部, 内边距
-    private float mDotPaddingBottom = (2 * getResources().getDisplayMetrics().density);
 
     public MonthView(Context context) {
         super(context);
@@ -22,9 +20,14 @@ final class MonthView extends BaseView {
     @Override
     protected void onDrawSign(Canvas canvas, Calendar calendar, int left, int top, int itemWidth, int itemHeight) {
 
-//        final boolean isSelected = isSelected(calendar);
+        // 1.底部圆点
         final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.BIUE);
-        canvas.drawCircle(left + itemWidth / 2, top + itemHeight - 3 * mDotPaddingBottom, mDotRadius, dotPaint);
+        canvas.drawCircle(left + itemWidth * 0.5f, top + itemHeight * 0.96f, mDotRadius, dotPaint);
+        // 2.右上角文字
+        final Paint lunarPaint = CalendarPaint.getTextPaint(CalendarPaint.RED, 24f);
+        lunarPaint.setFakeBoldText(true);
+        final float font = (lunarPaint.getFontMetrics().bottom - lunarPaint.getFontMetrics().top) * 0.3f;
+        canvas.drawText(calendar.getSchemesStr(), left + itemWidth * 0.82f, top + itemHeight * 0.18f + font, lunarPaint);
     }
 
     @Override
@@ -40,13 +43,13 @@ final class MonthView extends BaseView {
         }
 
         // 1.日期
-        final Paint datePaint = CalendarPaint.getTextPaint(getContext().getApplicationContext(), color, 40f);
+        final Paint datePaint = CalendarPaint.getTextPaint(color, 40f);
         final Paint.FontMetrics dateMetrics = datePaint.getFontMetrics();
         final float dateFont = (dateMetrics.bottom - dateMetrics.top) * 0.08f;
         canvas.drawText(String.valueOf(calendar.getDay()), cx, cy - dateFont, datePaint);
 
         // 2.农历
-        final Paint lunarPaint = CalendarPaint.getTextPaint(getContext().getApplicationContext(), color, 25f);
+        final Paint lunarPaint = CalendarPaint.getTextPaint(color, 25f);
         lunarPaint.setAlpha(155);
         final Paint.FontMetrics lunarMetrics = lunarPaint.getFontMetrics();
         final float lunarFont = (lunarMetrics.bottom - lunarMetrics.top) * 0.9f;
@@ -56,27 +59,22 @@ final class MonthView extends BaseView {
     @Override
     protected void onDrawBackground(Canvas canvas, Calendar calendar, int width, int height, int cx, int cy) {
 
-        // Log.e("onDrawBackground", " ==> " + calendar.getYear() + "-" + calendar.getMonth() + "-" + calendar.getDay() + ", isToday = " + calendar.isToady() + ", isSelect = " + calendar.isSelect());
-
         if (calendar.isToady()) {
-            final float radius = Math.min(width, height) * 0.4f;
+            final float radius = Math.min(width, height) * 0.38f;
             final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.GREEN);
             canvas.drawCircle(cx, cy, radius, dotPaint);
-            // Log.e("onDrawBacSelect11", " ==> today = " + calendar.getDay());
         }
 
         if (calendar.isSelect()) {
-            final float radius = Math.min(width, height) * 0.4f;
+            final float radius = Math.min(width, height) * 0.38f;
             final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.ORANGE);
             canvas.drawCircle(cx, cy, radius, dotPaint);
-            //   Log.e("onDrawBacSelect22", " ==> select = " + calendar.getDay());
         }
 
         if (calendar.isPress()) {
-            final float radius = Math.min(width, height) * 0.4f;
+            final float radius = Math.min(width, height) * 0.38f;
             final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.GRAAY);
             canvas.drawCircle(cx, cy, radius, dotPaint);
-            //  Log.e("onDrawBackground", " ==> press = " + calendar.getDay());
         }
     }
 }

@@ -1,12 +1,13 @@
 package com.lib.calendar;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,6 +15,29 @@ import java.util.Map;
  * created by kalu on 2018/6/9 11:00
  */
 final class CalendarUtil {
+
+    // 24节气
+    private static final List<String> solarTermsList = Arrays.asList(
+            "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至", "小暑", "大暑", "立秋", "处暑", "白露",
+            "秋分", "寒露", "霜降", "立冬", "小雪", "大雪", "冬至", "小寒", "大寒", "立春", "雨水", "惊蛰");
+
+    // 公历节日
+    private static final List<String> gregorianFestivalList = Arrays.asList(
+            "0101元旦", "0214情人节", "0308妇女节", "0312植树节", "0315消权日", "0401愚人节", "0501劳动节",
+            "0504青年节", "0601儿童节", "0701建党节", "0801建军节", "0910教师节", "1001国庆节", "1224平安夜", "1225圣诞节");
+
+    // 传统农历节日
+    private static final List<String> traditionFestivalList =  Arrays.asList(
+            "除夕", "0101春节", "0115元宵", "0505端午", "0707七夕", "0815中秋", "0909重阳");
+
+    // 农历月份
+    private static final List<String> lunarMonthList = Arrays.asList(
+            "春节", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "冬月", "腊月");
+
+    // 农历日期
+    private static final List<String> lunarDateList = Arrays.asList(
+            "初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四", "十五",
+            "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十");
 
     /**
      * 判断一个日期是否是周末，即周六日
@@ -518,10 +542,7 @@ final class CalendarUtil {
             0.1230200, -1.6139220085, 628.3019552485, -2.6638815E-06, 6.1639211E-10, -5.4439728E-11, 0.0775400, 8.7830116346, 16171.0562454324, -6.8852003E-05, 6.4563317E-08, -3.6316908E-10, 0.0606800, 6.4274570623, 7842.3648207073, -2.2116475E-04, -1.8584780E-07, 8.2317000E-10, 0.0497000, 12.0539813334, 14286.1503796870, -6.0860358E-05, 6.2714140E-08, -1.9984990E-10};
     private static final double M1n[] = {3.81034392032, 8.39968473021E+03, -3.31919929753E-05, //月球平黄经系数
             3.20170955005E-08, -1.53637455544E-10};
-    /**
-     * 24节气
-     */
-    private static String SOLAR_TERMS[] = null;
+
     private static double EnnT = 0; // 调用Enn前先设置EnnT时间变量
     // ==================月位置计算===================
     private static double MnnT = 0; // 调用Mnn前先设置MnnT时间变量
@@ -871,7 +892,7 @@ final class CalendarUtil {
             q = getTimeFromAngle(jd + i * 15.2, i * 15, 0);
             q = q + J2000 + (double) 8 / 24; // 计算第i个节气(i=0是春风),结果转为北京时
             Time time = setFromJulian(q, true);
-            solarTerms[i + 3] = time.toString() + SOLAR_TERMS[i];
+            solarTerms[i + 3] = time.toString() + solarTermsList.get(i);
         }
 
         return solarTerms;
@@ -891,7 +912,7 @@ final class CalendarUtil {
             q = getTimeFromAngle(jd + i * 15.2, i * 15, 0);
             q = q + J2000 + (double) 8 / 24; // 计算第i个节气(i=0是春分)
             Time time = setFromJulian(q, true);
-            solarTerms[i - 21] = time.toString() + SOLAR_TERMS[i];
+            solarTerms[i - 21] = time.toString() + solarTermsList.get(i);
         }
         return solarTerms;
     }
@@ -909,7 +930,7 @@ final class CalendarUtil {
             q = getTimeFromAngle(jd + i * 15.2, i * 15, 0);
             q = q + J2000 + (double) 8 / 24; // 计算第i个节气(i=0是春分)
             Time time = setFromJulian(q, true);
-            solarTerms[i - 19] = time.toString() + SOLAR_TERMS[i];
+            solarTerms[i - 19] = time.toString() + solarTermsList.get(i);
         }
         return solarTerms;
     }
@@ -1019,33 +1040,6 @@ final class CalendarUtil {
             0x069349, 0x7729BD, 0x06AA51, 0x0AD546, 0x54DABA, 0x04B64E, 0x0A5743, 0x452738, 0x0D264A, 0x8E933E,/*2081-2090*/
             0x0D5252, 0x0DAA47, 0x66B53B, 0x056D4F, 0x04AE45, 0x4A4EB9, 0x0A4D4C, 0x0D1541, 0x2D92B5          /*2091-2099*/
     };
-    /**
-     * 农历月份第一天转写
-     */
-    private static String[] MONTH_STR = null;
-    /**
-     * 传统农历节日
-     */
-    private static String[] TRADITION_FESTIVAL_STR = null;
-    /**
-     * 农历大写
-     */
-    private static String DAY_STR[] = null;
-    /**
-     * 公历节日
-     */
-    private static String[] SOLAR_CALENDAR = null;
-
-    static void init(Context context) {
-        if (MONTH_STR != null) {
-            return;
-        }
-        SOLAR_TERMS = context.getResources().getStringArray(R.array.solar_term);
-        MONTH_STR = context.getResources().getStringArray(R.array.lunar_first_of_month);
-        TRADITION_FESTIVAL_STR = context.getResources().getStringArray(R.array.tradition_festival);
-        DAY_STR = context.getResources().getStringArray(R.array.lunar_str);
-        SOLAR_CALENDAR = context.getResources().getStringArray(R.array.solar_festival);
-    }
 
     /**
      * 返回传统农历节日
@@ -1059,12 +1053,12 @@ final class CalendarUtil {
         if (month == 12) {
             int count = daysInLunarMonth(year, month);
             if (day == count) {
-                return TRADITION_FESTIVAL_STR[0];//除夕
+                return traditionFestivalList.get(0);//除夕
             }
         }
         String text = getString(month, day);
         String festivalStr = "";
-        for (String festival : TRADITION_FESTIVAL_STR) {
+        for (String festival : traditionFestivalList) {
             if (festival.contains(text)) {
                 festivalStr = festival.replace(text, "");
                 break;
@@ -1082,9 +1076,9 @@ final class CalendarUtil {
      */
     private static String numToChineseMonth(int month, int leap) {
         if (leap == 1) {
-            return String.format("闰%s", MONTH_STR[month - 1]);
+            return String.format("闰%s", lunarMonthList.get(month - 1));
         }
-        return MONTH_STR[month - 1];
+        return lunarMonthList.get(month - 1);
     }
 
     /**
@@ -1099,7 +1093,7 @@ final class CalendarUtil {
         if (day == 1) {
             return numToChineseMonth(month, leap);
         }
-        return DAY_STR[day - 1];
+        return lunarDateList.get(day- 1);
     }
 
     /**
@@ -1110,7 +1104,7 @@ final class CalendarUtil {
      * @return 传回农历 year年month月的总天数
      */
     private static int daysInLunarMonth(int year, int month) {
-        if ((LUNAR_INFO[year - CalendarDelegate.MIN_YEAR] & (0x100000 >> month)) == 0)
+        if ((LUNAR_INFO[year - CalendarLayout.MIN_YEAR] & (0x100000 >> month)) == 0)
             return 29;
         else
             return 30;
@@ -1126,7 +1120,7 @@ final class CalendarUtil {
     private static String gregorianFestival(int month, int day) {
         String text = getString(month, day);
         String solar = "";
-        for (String aMSolarCalendar : SOLAR_CALENDAR) {
+        for (String aMSolarCalendar : gregorianFestivalList) {
             if (aMSolarCalendar.contains(text)) {
                 solar = aMSolarCalendar.replace(text, "");
                 break;

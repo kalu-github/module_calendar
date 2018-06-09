@@ -2,9 +2,6 @@ package com.lib.calendar;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.GestureDetector;
@@ -32,6 +29,10 @@ public abstract class BaseView extends View {
         CalendarUtil.setupLunarCalendar(mCalendarToday);
     }
 
+    public BaseView(Context context) {
+        super(context);
+    }
+
     final void setSelectCalendar(int year, int month, int day) {
         mCalendarSelect.setYear(year);
         mCalendarSelect.setMonth(month);
@@ -39,177 +40,7 @@ public abstract class BaseView extends View {
         CalendarUtil.setupLunarCalendar(mCalendarSelect);
     }
 
-    /**
-     * 字体大小
-     */
-    final float TEXT_SIZE = sp2px(getContext(), 14);
-    /**
-     * 当前月份日期的笔
-     */
-    protected Paint mCurMonthTextPaint = new Paint();
-
-    /**
-     * 其它月份日期颜色
-     */
-    protected Paint mOtherMonthTextPaint = new Paint();
-
-    /**
-     * 当前月份农历文本颜色
-     */
-    protected Paint mCurMonthLunarTextPaint = new Paint();
-
-
-    /**
-     * 当前月份农历文本颜色
-     */
-    protected Paint mSelectedLunarTextPaint = new Paint();
-
-    /**
-     * 其它月份农历文本颜色
-     */
-    protected Paint mOtherMonthLunarTextPaint = new Paint();
-
-    /**
-     * 其它月份农历文本颜色
-     */
-    protected Paint mSchemeLunarTextPaint = new Paint();
-
-    /**
-     * 标记的日期背景颜色画笔
-     */
-    protected Paint mSchemePaint = new Paint();
-
-    /**
-     * 被选择的日期背景色
-     */
-    protected Paint mSelectedPaint = new Paint();
-
-    /**
-     * 标记的文本画笔
-     */
-    protected Paint mSchemeTextPaint = new Paint();
-
-    /**
-     * 选中的文本画笔
-     */
-    protected Paint mSelectTextPaint = new Paint();
-
-    /**
-     * 当前日期文本颜色画笔
-     */
-    protected Paint mCurDayTextPaint = new Paint();
-
-    /**
-     * 当前日期文本颜色画笔
-     */
-    protected Paint mCurDayLunarTextPaint = new Paint();
-
     /********************************************************************/
-
-    public BaseView(Context context) {
-        this(context, null);
-    }
-
-    public BaseView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-
-        mCurMonthTextPaint.setAntiAlias(true);
-        mCurMonthTextPaint.setTextAlign(Paint.Align.CENTER);
-        mCurMonthTextPaint.setColor(0xFF111111);
-        mCurMonthTextPaint.setFakeBoldText(true);
-        mCurMonthTextPaint.setTextSize(TEXT_SIZE);
-
-        mOtherMonthTextPaint.setAntiAlias(true);
-        mOtherMonthTextPaint.setTextAlign(Paint.Align.CENTER);
-        mOtherMonthTextPaint.setColor(0xFFe1e1e1);
-        mOtherMonthTextPaint.setFakeBoldText(true);
-        mOtherMonthTextPaint.setTextSize(TEXT_SIZE);
-
-        mCurMonthLunarTextPaint.setAntiAlias(true);
-        mCurMonthLunarTextPaint.setTextAlign(Paint.Align.CENTER);
-
-        mSelectedLunarTextPaint.setAntiAlias(true);
-        mSelectedLunarTextPaint.setTextAlign(Paint.Align.CENTER);
-
-        mOtherMonthLunarTextPaint.setAntiAlias(true);
-        mOtherMonthLunarTextPaint.setTextAlign(Paint.Align.CENTER);
-
-
-        mSchemeLunarTextPaint.setAntiAlias(true);
-        mSchemeLunarTextPaint.setTextAlign(Paint.Align.CENTER);
-
-        mSchemeTextPaint.setAntiAlias(true);
-        mSchemeTextPaint.setStyle(Paint.Style.FILL);
-        mSchemeTextPaint.setTextAlign(Paint.Align.CENTER);
-        mSchemeTextPaint.setColor(0xffed5353);
-        mSchemeTextPaint.setFakeBoldText(true);
-        mSchemeTextPaint.setTextSize(TEXT_SIZE);
-
-        mSelectTextPaint.setAntiAlias(true);
-        mSelectTextPaint.setStyle(Paint.Style.FILL);
-        mSelectTextPaint.setTextAlign(Paint.Align.CENTER);
-        mSelectTextPaint.setColor(0xffed5353);
-        mSelectTextPaint.setFakeBoldText(true);
-        mSelectTextPaint.setTextSize(TEXT_SIZE);
-
-        mSchemePaint.setAntiAlias(true);
-        mSchemePaint.setStyle(Paint.Style.FILL);
-        mSchemePaint.setStrokeWidth(2);
-        mSchemePaint.setColor(0xffefefef);
-
-        mCurDayTextPaint.setAntiAlias(true);
-        mCurDayTextPaint.setTextAlign(Paint.Align.CENTER);
-        mCurDayTextPaint.setColor(Color.RED);
-        mCurDayTextPaint.setFakeBoldText(true);
-        mCurDayTextPaint.setTextSize(TEXT_SIZE);
-
-        mCurDayLunarTextPaint.setAntiAlias(true);
-        mCurDayLunarTextPaint.setTextAlign(Paint.Align.CENTER);
-        mCurDayLunarTextPaint.setColor(Color.RED);
-        mCurDayLunarTextPaint.setFakeBoldText(true);
-        mCurDayLunarTextPaint.setTextSize(TEXT_SIZE);
-
-        mSelectedPaint.setAntiAlias(true);
-        mSelectedPaint.setStyle(Paint.Style.FILL);
-        mSelectedPaint.setStrokeWidth(2);
-    }
-
-    /********************************************************************/
-
-    CalendarDelegate mDelegate;
-
-    void setup(CalendarDelegate delegate) {
-        this.mDelegate = delegate;
-
-        this.mCurDayTextPaint.setColor(delegate.getCurDayTextColor());
-        this.mCurDayLunarTextPaint.setColor(delegate.getCurDayLunarTextColor());
-        this.mCurMonthTextPaint.setColor(delegate.getCurrentMonthTextColor());
-        this.mOtherMonthTextPaint.setColor(delegate.getOtherMonthTextColor());
-        this.mCurMonthLunarTextPaint.setColor(delegate.getCurrentMonthLunarTextColor());
-        this.mSelectedLunarTextPaint.setColor(delegate.getSelectedLunarTextColor());
-        this.mSelectTextPaint.setColor(delegate.getSelectedTextColor());
-        this.mOtherMonthLunarTextPaint.setColor(delegate.getOtherMonthLunarTextColor());
-        this.mSchemeLunarTextPaint.setColor(delegate.getSchemeLunarTextColor());
-
-        this.mSchemePaint.setColor(delegate.getSchemeThemeColor());
-        this.mSchemeTextPaint.setColor(delegate.getSchemeTextColor());
-
-
-        this.mCurMonthTextPaint.setTextSize(delegate.getDayTextSize());
-        this.mOtherMonthTextPaint.setTextSize(delegate.getDayTextSize());
-        this.mCurDayTextPaint.setTextSize(delegate.getDayTextSize());
-        this.mSchemeTextPaint.setTextSize(delegate.getDayTextSize());
-        this.mSelectTextPaint.setTextSize(delegate.getDayTextSize());
-
-        this.mCurMonthLunarTextPaint.setTextSize(delegate.getLunarTextSize());
-        this.mSelectedLunarTextPaint.setTextSize(delegate.getLunarTextSize());
-        this.mCurDayLunarTextPaint.setTextSize(delegate.getLunarTextSize());
-        this.mOtherMonthLunarTextPaint.setTextSize(delegate.getLunarTextSize());
-        this.mSchemeLunarTextPaint.setTextSize(delegate.getLunarTextSize());
-
-        this.mSelectedPaint.setStyle(Paint.Style.FILL);
-        this.mSelectedPaint.setColor(delegate.getSelectedThemeColor());
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -313,8 +144,7 @@ public abstract class BaseView extends View {
                 onDrawBackground(canvas, calendar, itemWidth, itemHeight, cx, cy);
                 onDrawText(canvas, calendar, left, top, cx, cy);
 
-                if (calendar.hasScheme()) {
-                    mSchemePaint.setColor(calendar.getSchemeColor() != 0 ? calendar.getSchemeColor() : mDelegate.getSchemeThemeColor());
+                if (calendar.isSchemes()) {
                     onDrawSign(canvas, calendar, left, top, itemWidth, itemHeight);
                 }
 
@@ -393,6 +223,8 @@ public abstract class BaseView extends View {
             // 今天日子
             if (year == mCalendarToday.getYear() && month == mCalendarToday.getMonth() && day == mCalendarToday.getDay()) {
                 calendarDate.setToady(true);
+                calendarDate.setSchemes(true);
+                calendarDate.setSchemesStr("诊");
             }
             // 选中日子
             if (year == mCalendarSelect.getYear() && month == mCalendarSelect.getMonth() && day == mCalendarSelect.getDay()) {

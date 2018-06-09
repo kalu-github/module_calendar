@@ -25,7 +25,7 @@ final class CalendartManager extends LinearLayoutManager implements RecyclerView
         try {
             super.onLayoutChildren(recycler, state);
         } catch (Exception e) {
-            Log.e("", e.getMessage(), e);
+            Log.e("onLayoutChildren", e.getMessage(), e);
         }
     }
 

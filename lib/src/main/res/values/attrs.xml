@@ -1,50 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="CalendarLayout">
-
+        <!-- 最小年份 -->
         <attr name="cl_min_year" format="integer|reference" />
+        <!-- 最小年份的月份 -->
         <attr name="cl_min_year_month" format="integer|reference" />
+        <!-- 最大年份 -->
         <attr name="cl_max_year" format="integer|reference" />
+        <!-- 最大年份的月份 -->
         <attr name="cl_max_year_month" format="integer|reference" />
-
+        <!-- 默认选中：年 -->
         <attr name="cl_select_year" format="integer|reference" />
+        <!-- 默认选中：月 -->
         <attr name="cl_select_month" format="integer|reference" />
+        <!-- 默认选中：日 -->
         <attr name="cl_select_day" format="integer|reference" />
-
+        <!-- 默认选中：背景色 -->
         <attr name="cl_bg_select_color" format="color|reference" />
+        <!-- 今天：背景色 -->
         <attr name="cl_bg_today_color" format="color|reference" />
-
-        <attr name="cl_day_text_color_today" format="color" />
-        <attr name="cl_day_lunar_text_color_today" format="color" />
-        <attr name="cl_day_text_color_select" format="color" />
-        <attr name="cl_day_lunar_text_color_select" format="color" />
-
-        <attr name="cl_month_text_color_current" format="color" />
-        <attr name="cl_month_text_color_other" format="color" />
-        <attr name="cl_month_lunar_text_color_current" format="color" />
-        <attr name="cl_month_lunar_text_color_other" format="color" />
-
-        <attr name="week_background" format="color" />
-        <attr name="week_line_background" format="color" />
-        <attr name="week_text_color" format="color" />
-
-        <attr name="month_view" format="string" /><!--完全自定义月视图-->
-
-        <attr name="week_view" format="string" /> <!--完全自定义周视图-->
-        <attr name="week_bar_height" format="dimension" /> <!--星期栏的高度-->
-        <attr name="week_bar_view" format="string" /> <!--如果需要的话使用自定义星期栏-->
-
-        <attr name="scheme_text" format="string" />
-        <attr name="day_text_size" format="dimension" />
-        <attr name="lunar_text_size" format="dimension" />
-        <attr name="calendar_height" format="dimension" />
-        <attr name="scheme_text_color" format="color" />
-        <attr name="scheme_month_text_color" format="color" />
-        <attr name="scheme_lunar_text_color" format="color" />
-        <attr name="scheme_theme_color" format="color" />
-
-        <attr name="selected_text_color" format="color" />
-        <attr name="selected_lunar_text_color" format="color" />
-
+        <!-- 今天：日期文字颜色 -->
+        <attr name="cl_today_text_color" format="color" />
+        <!-- 今天：农历文字颜色 -->
+        <attr name="cl_today_lunar_text_color" format="color" />
+        <!-- 当月：日期文字颜色 -->
+        <attr name="cl_current_text_color" format="color" />
+        <!-- 当月：农历文字颜色 -->
+        <attr name="cl_other_text_color" format="color" />
+        <!-- 其它月：日期文字颜色 -->
+        <attr name="cl_current_lunar_text_color" format="color" />
+        <!-- 其它月：农历文字颜色 -->
+        <attr name="cl_other_lunar_text_color" format="color" />
+        <!-- 星期栏：高度 -->
+        <attr name="cl_week_height" format="dimension|reference" />
+        <!-- 星期栏：文字颜色 -->
+        <attr name="cl_week_text_size" format="dimension|reference" />
+        <!-- 星期栏：背景颜色 -->
+        <attr name="cl_week_bg_color" format="color|reference" />
+        <!-- 星期栏：文字颜色 -->
+        <attr name="cl_week_text_color" format="color|reference" />
+        <!-- 星期栏：自定义路径 -->
+        <attr name="cl_week_class" format="string|reference" />
     </declare-styleable>
 </resources>

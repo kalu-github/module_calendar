@@ -44,7 +44,7 @@ final class CalendarPaint {
         return mPaint;
     }
 
-    public static Paint getTextPaint(Context context, int color, float textSize) {
+    public static Paint getTextPaint(int color, float textSize) {
 
         mPaint.clearShadowLayer();
         mPaint.reset();
@@ -54,7 +54,6 @@ final class CalendarPaint {
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setFakeBoldText(false);
-        mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSize, context.getResources().getDisplayMetrics()));
         mPaint.setColor(color);
         mPaint.setTextAlign(Paint.Align.CENTER);
         mPaint.setTextSize(textSize);
