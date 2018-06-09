@@ -64,7 +64,6 @@ public abstract class BaseView extends View {
 
     private final GestureDetector mSimpleOnGestureListener = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
 
-
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
 
