@@ -3,8 +3,6 @@ package com.lib.calendar;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 
 /**
  * description: 月视图
@@ -13,9 +11,9 @@ import android.util.TypedValue;
 public final class MonthView extends BaseView {
 
     // 圆点半径, 日期底部
-    private float mDotRadius = dp2px(getContext(), 3);
+    private float mDotRadius = (3 * getResources().getDisplayMetrics().density);
     // 圆点底部, 内边距
-    private float mDotPaddingBottom = dp2px(getContext(), 2);
+    private float mDotPaddingBottom = (2 * getResources().getDisplayMetrics().density);
 
     public MonthView(Context context) {
         super(context);
@@ -25,7 +23,7 @@ public final class MonthView extends BaseView {
     protected void onDrawSign(Canvas canvas, Calendar calendar, int left, int top, int itemWidth, int itemHeight) {
 
 //        final boolean isSelected = isSelected(calendar);
-        final Paint dotPaint = CalendarPaint.getBackgroundPaint(CalendarPaint.BIUE);
+        final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.BIUE);
         canvas.drawCircle(left + itemWidth / 2, top + itemHeight - 3 * mDotPaddingBottom, mDotRadius, dotPaint);
     }
 
@@ -41,12 +39,14 @@ public final class MonthView extends BaseView {
             color = calendar.isCurMonth() ? CalendarPaint.BLACK : CalendarPaint.GRAAY;
         }
 
-        final Paint datePaint = CalendarPaint.getTextPaint(color, CalendarPaint.DATE_TEXT_SIZE);
+        // 1.日期
+        final Paint datePaint = CalendarPaint.getTextPaint(getContext().getApplicationContext(), color, 40f);
         final Paint.FontMetrics dateMetrics = datePaint.getFontMetrics();
         final float dateFont = (dateMetrics.bottom - dateMetrics.top) * 0.08f;
         canvas.drawText(String.valueOf(calendar.getDay()), cx, cy - dateFont, datePaint);
 
-        final Paint lunarPaint = CalendarPaint.getTextPaint(color, CalendarPaint.LUNAR_TEXT_SIZE);
+        // 2.农历
+        final Paint lunarPaint = CalendarPaint.getTextPaint(getContext().getApplicationContext(), color, 25f);
         lunarPaint.setAlpha(155);
         final Paint.FontMetrics lunarMetrics = lunarPaint.getFontMetrics();
         final float lunarFont = (lunarMetrics.bottom - lunarMetrics.top) * 0.9f;
@@ -60,41 +60,23 @@ public final class MonthView extends BaseView {
 
         if (calendar.isToady()) {
             final float radius = Math.min(width, height) * 0.4f;
-            final Paint dotPaint = CalendarPaint.getBackgroundPaint(CalendarPaint.GREEN);
+            final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.GREEN);
             canvas.drawCircle(cx, cy, radius, dotPaint);
             // Log.e("onDrawBacSelect11", " ==> today = " + calendar.getDay());
         }
 
         if (calendar.isSelect()) {
             final float radius = Math.min(width, height) * 0.4f;
-            final Paint dotPaint = CalendarPaint.getBackgroundPaint(CalendarPaint.ORANGE);
+            final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.ORANGE);
             canvas.drawCircle(cx, cy, radius, dotPaint);
             //   Log.e("onDrawBacSelect22", " ==> select = " + calendar.getDay());
         }
 
         if (calendar.isPress()) {
             final float radius = Math.min(width, height) * 0.4f;
-            final Paint dotPaint = CalendarPaint.getBackgroundPaint(CalendarPaint.GRAAY);
+            final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.GRAAY);
             canvas.drawCircle(cx, cy, radius, dotPaint);
             //  Log.e("onDrawBackground", " ==> press = " + calendar.getDay());
         }
-    }
-
-    private final float sp2px(Context context, float sp) {
-
-        final DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, metrics);
-    }
-
-    private final float dp2px(Context context, float dp) {
-
-        final DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return dp * metrics.density;
-    }
-
-    private final int dp2px(Context context, int dp) {
-
-        final DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return (int) (dp * metrics.density);
     }
 }

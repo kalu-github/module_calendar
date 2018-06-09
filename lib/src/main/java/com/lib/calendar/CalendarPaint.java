@@ -14,10 +14,6 @@ public class CalendarPaint {
 
     private final static Paint mPaint = new Paint();
 
-    public static float SCHEME_TEXT_SIZE = sp2px(BaseApp.getContext(), 10f);
-    public static float LUNAR_TEXT_SIZE = sp2px(BaseApp.getContext(), 9.5f);
-    public static float DATE_TEXT_SIZE = sp2px(BaseApp.getContext(), 16.5f);
-
     public static final int ORANGE = Color.parseColor("#ddff9e21");
     public static final int TRANSPARENT = Color.TRANSPARENT;
     public static final int WHITE = Color.WHITE;
@@ -29,7 +25,7 @@ public class CalendarPaint {
     public static final int GREY = Color.parseColor("#cccccc");
     public static final int RED = Color.RED;
 
-    public static Paint getBackgroundPaint(int color) {
+    public static Paint getBackgroundPaint(Context context, int color) {
 
         mPaint.clearShadowLayer();
         mPaint.reset();
@@ -42,13 +38,13 @@ public class CalendarPaint {
         mPaint.setAlpha(255);
         mPaint.setTextAlign(Paint.Align.CENTER);
         mPaint.setTextSize(0f);
-        mPaint.setTextSize(SCHEME_TEXT_SIZE);
+        mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10f, context.getResources().getDisplayMetrics()));
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         return mPaint;
     }
 
-    public static Paint getTextPaint(int color, float textSize) {
+    public static Paint getTextPaint(Context context, int color, float textSize) {
 
         mPaint.clearShadowLayer();
         mPaint.reset();
@@ -58,30 +54,12 @@ public class CalendarPaint {
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setFakeBoldText(false);
-        mPaint.setTextSize(SCHEME_TEXT_SIZE);
+        mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSize, context.getResources().getDisplayMetrics()));
         mPaint.setColor(color);
         mPaint.setTextAlign(Paint.Align.CENTER);
         mPaint.setTextSize(textSize);
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         return mPaint;
-    }
-
-    private final static float sp2px(Context context, float sp) {
-
-        final DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, metrics);
-    }
-
-    private final static float dp2px(Context context, float dp) {
-
-        final DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return dp * metrics.density;
-    }
-
-    private final static int dp2px(Context context, int dp) {
-
-        final DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return (int) (dp * metrics.density);
     }
 }
