@@ -10,10 +10,10 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 /**
- * description: 属性委托
- * created by kalu on 2018/4/10 23:09
+ * description: 属性
+ * created by kalu on 2018/6/9 10:52
  */
-public final class CalendarDelegate {
+final class CalendarDelegate {
 
     public final static int MIN_YEAR = 1900;
     public final static int MAX_YEAR = 2099;
@@ -71,7 +71,7 @@ public final class CalendarDelegate {
     void setAttributeSet(Context context, @Nullable AttributeSet attrs) {
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CalendarLayout);
 
-        LunarCalendar.init(context);
+        CalendarUtil.init(context);
 
         mSchemeTextColor = array.getColor(R.styleable.CalendarLayout_scheme_text_color, 0xFFFFFFFF);
         mSchemeLunarTextColor = array.getColor(R.styleable.CalendarLayout_scheme_lunar_text_color, 0xFFe1e1e1);

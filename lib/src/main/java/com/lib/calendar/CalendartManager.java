@@ -11,12 +11,12 @@ import android.view.View;
  * description: 垂直水平翻页
  * created by kalu on 2018/6/5 14:27
  */
-public final class PagerLayoutManager extends LinearLayoutManager implements RecyclerView.OnChildAttachStateChangeListener {
+final class CalendartManager extends LinearLayoutManager implements RecyclerView.OnChildAttachStateChangeListener {
 
     private final PagerSnapHelper mPagerSnapHelper = new PagerSnapHelper();
     private int mDrift;//位移，用来判断移动方向
 
-    public PagerLayoutManager(Context context, int orientation, boolean reverseLayout) {
+    public CalendartManager(Context context, int orientation, boolean reverseLayout) {
         super(context, orientation, reverseLayout);
     }
 

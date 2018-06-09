@@ -10,7 +10,7 @@ import android.util.TypedValue;
  * description: 画笔
  * created by kalu on 2017/11/12 3:05
  */
-public class CalendarPaint {
+final class CalendarPaint {
 
     private final static Paint mPaint = new Paint();
 

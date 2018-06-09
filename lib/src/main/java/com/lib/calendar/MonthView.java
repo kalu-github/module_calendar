@@ -8,7 +8,7 @@ import android.graphics.Paint;
  * description: 月视图
  * created by kalu on 2018/5/23 22:30
  */
-public final class MonthView extends BaseView {
+final class MonthView extends BaseView {
 
     // 圆点半径, 日期底部
     private float mDotRadius = (3 * getResources().getDisplayMetrics().density);

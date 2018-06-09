@@ -20,12 +20,12 @@ import java.lang.reflect.Constructor;
 
 /**
  * description: 日历布局
- * created by kalu on 2018/4/10 23:09
+ * created by kalu on 2018/6/9 10:53
  */
 public final class CalendarLayout extends LinearLayout {
 
     private final CalendarDelegate mDelegate = new CalendarDelegate();
-    private final PagerLayoutManager mPagerLayoutManager = new PagerLayoutManager(getContext().getApplicationContext(), LinearLayout.HORIZONTAL, false);
+    private final CalendartManager mPagerLayoutManager = new CalendartManager(getContext().getApplicationContext(), LinearLayout.HORIZONTAL, false);
 
     private int selectYear = -1, selectMonth = -1, selectDay = -1;
 
@@ -98,7 +98,7 @@ public final class CalendarLayout extends LinearLayout {
 
         recyclerView.setLayoutManager(mPagerLayoutManager);
         recyclerView.setAdapter(new CalendarAdapter());
-        mPagerLayoutManager.setOnPagerChangeListener(new PagerLayoutManager.OnPagerChangeListener() {
+        mPagerLayoutManager.setOnPagerChangeListener(new CalendartManager.OnPagerChangeListener() {
 
             @Override
             public void onPageSelect(int position, boolean isTop, boolean isBottom) {
@@ -114,7 +114,7 @@ public final class CalendarLayout extends LinearLayout {
 //                calendar.setCurrentMonth(calendar.getYear() == mDelegate.getTodayCalendar().getYear() &&
 //                        calendar.getMonth() == mDelegate.getTodayCalendar().getMonth());
 //                calendar.setSelect(calendar.equals(mDelegate.getTodayCalendar()));
-//                LunarCalendar.setupLunarCalendar(calendar);
+//                LunarUtil.setupLunarCalendar(calendar);
 
 //                if (!calendar.isCurrentMonth()) {
 //                    mDelegate.mSelectedCalendar = calendar;

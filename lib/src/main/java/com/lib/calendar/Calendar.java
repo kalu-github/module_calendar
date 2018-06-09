@@ -11,23 +11,27 @@ import java.util.List;
  * created by kalu on 2018/4/10 23:08
  */
 public final class Calendar implements Serializable {
-    private static final long serialVersionUID = 141315161718191143L;
+
+    /**
+     * isToady:     是否当天
+     * isSelect：   是否选中
+     * isPress：    是否按压
+     * isCurMonth： 是否当前月
+     * isLeapYear： 是否闰年
+     * isLeapMonth: 是否闰月
+     */
+    private boolean isToady = false, isSelect = false, isPress = false, isCurMonth = false, isLeapYear = false, isLeapMonth = false;
 
     private int year, month, day;
 
-    /**
-     * 如果是闰月，则返回闰月
-     */
-    private int leapMonth;
 
-    /**
-     * 是否是闰年
-     */
-    private boolean isLeapYear;
+    public boolean isPress() {
+        return isPress;
+    }
 
-    private boolean isCurMonth;
-    private boolean isSelect;
-    private boolean isToady;
+    public void setPress(boolean press) {
+        isPress = press;
+    }
 
     public boolean isToady() {
         return isToady;
@@ -232,13 +236,12 @@ public final class Calendar implements Serializable {
         this.gregorianFestival = gregorianFestival;
     }
 
-
-    public int getLeapMonth() {
-        return leapMonth;
+    public boolean isLeapMonth() {
+        return isLeapMonth;
     }
 
-    public void setLeapMonth(int leapMonth) {
-        this.leapMonth = leapMonth;
+    public void setLeapMonth(boolean leapMonth) {
+        isLeapMonth = leapMonth;
     }
 
     public boolean isLeapYear() {
@@ -351,14 +354,4 @@ public final class Calendar implements Serializable {
     }
 
     /*******************************************************/
-
-    private boolean isPress;
-
-    public boolean isPress() {
-        return isPress;
-    }
-
-    public void setPress(boolean press) {
-        isPress = press;
-    }
 }

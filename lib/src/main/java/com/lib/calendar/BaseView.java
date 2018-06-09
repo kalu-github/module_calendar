@@ -14,8 +14,8 @@ import android.view.View;
 import java.util.ArrayList;
 
 /**
- * description: 基本的日历View，派生出MonthView
- * created by kalu on 2018/4/10 23:08
+ * description: 日历基类
+ * created by kalu on 2018/6/9 10:52
  */
 public abstract class BaseView extends View {
 
@@ -29,14 +29,14 @@ public abstract class BaseView extends View {
         mCalendarToday.setYear(instance.get(java.util.Calendar.YEAR));
         mCalendarToday.setMonth(instance.get(java.util.Calendar.MONTH) + 1);
         mCalendarToday.setDay(instance.get(java.util.Calendar.DAY_OF_MONTH));
-        LunarCalendar.setupLunarCalendar(mCalendarToday);
+        CalendarUtil.setupLunarCalendar(mCalendarToday);
     }
 
     final void setSelectCalendar(int year, int month, int day) {
         mCalendarSelect.setYear(year);
         mCalendarSelect.setMonth(month);
         mCalendarSelect.setDay(day);
-        LunarCalendar.setupLunarCalendar(mCalendarSelect);
+        CalendarUtil.setupLunarCalendar(mCalendarSelect);
     }
 
     /**
@@ -331,7 +331,7 @@ public abstract class BaseView extends View {
 
         news.set(mYear, mMonth - 1, 1);
         int mPreDiff = news.get(java.util.Calendar.DAY_OF_WEEK) - 1;
-        int mDayCount = Util.getMonthDaysCount(mYear, mMonth);
+        int mDayCount = CalendarUtil.getMonthDaysCount(mYear, mMonth);
         news.set(mYear, mMonth - 1, mDayCount);
 
         int preYear, preMonth;
@@ -343,19 +343,19 @@ public abstract class BaseView extends View {
             preMonth = 12;
             nextYear = mYear;
             nextMonth = mMonth + 1;
-            preMonthDaysCount = mPreDiff == 0 ? 0 : Util.getMonthDaysCount(preYear, preMonth);
+            preMonthDaysCount = mPreDiff == 0 ? 0 : CalendarUtil.getMonthDaysCount(preYear, preMonth);
         } else if (mMonth == 12) {//如果是12月
             preYear = mYear;
             preMonth = mMonth - 1;
             nextYear = mYear + 1;
             nextMonth = 1;
-            preMonthDaysCount = mPreDiff == 0 ? 0 : Util.getMonthDaysCount(preYear, preMonth);
+            preMonthDaysCount = mPreDiff == 0 ? 0 : CalendarUtil.getMonthDaysCount(preYear, preMonth);
         } else {//平常
             preYear = mYear;
             preMonth = mMonth - 1;
             nextYear = mYear;
             nextMonth = mMonth + 1;
-            preMonthDaysCount = mPreDiff == 0 ? 0 : Util.getMonthDaysCount(preYear, preMonth);
+            preMonthDaysCount = mPreDiff == 0 ? 0 : CalendarUtil.getMonthDaysCount(preYear, preMonth);
         }
         int nextDay = 1;
         mItems.clear();
@@ -388,7 +388,7 @@ public abstract class BaseView extends View {
             calendarDate.setMonth(month);
             calendarDate.setDay(day);
             // 初始化农历信息
-            LunarCalendar.setupLunarCalendar(calendarDate);
+            CalendarUtil.setupLunarCalendar(calendarDate);
 
             // 今天日子
             if (year == mCalendarToday.getYear() && month == mCalendarToday.getMonth() && day == mCalendarToday.getDay()) {
