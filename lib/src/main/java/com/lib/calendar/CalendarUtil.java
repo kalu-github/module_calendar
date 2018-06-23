@@ -15,31 +15,63 @@ import java.util.Map;
  */
 final class CalendarUtil {
 
-    // 每弧度的角秒数
+    /**
+     * 每弧度的角秒数
+     */
     private static final double SECOND_PER_RAD = 180 * 3600 / Math.PI;
-
-    // 每弧度的角度数
+    /**
+     * 每弧度的角度数
+     */
     private static final double ANGLE_PER_RAD = 180 / Math.PI;
-
-    // 日历计算, 2000年前儒略日数(2000-1-1)
+    /**
+     * 日历计算
+     * 2000年前儒略日数(2000-1-1)
+     */
     private static final double J2000 = 2451545;
-
-    // 光行差常数
+    /**
+     * 黄赤交角系数表
+     */
+    private static final double H_C_ANGLE_TABLE[] = {0, 50287.92262, 111.24406,
+            0.07699, -0.23479, -0.00178, 0.00018, 0.00001};
+    /**
+     * 世界时与原子时之差计算表
+     */
+    private static final double[] DTS = {
+            -4000, 108371.7, -13036.80, 392.000, 0.0000, -500, 17201.0,
+            -627.82, 16.170, -0.3413, -150, 12200.6, -346.41, 5.403, -0.1593,
+            150, 9113.8, -328.13, -1.647, 0.0377, 500, 5707.5, -391.41, 0.915,
+            0.3145, 900, 2203.4, -283.45, 13.034, -0.1778, 1300, 490.1, -57.35,
+            2.085, -0.0072, 1600, 120.0, -9.81, -1.532, 0.1403, 1700, 10.2,
+            -0.91, 0.510, -0.0370, 1800, 13.4, -0.72, 0.202, -0.0193, 1830,
+            7.8, -1.81, 0.416, -0.0247, 1860, 8.3, -0.13, -0.406, 0.0292, 1880,
+            -5.4, 0.32, -0.183, 0.0173, 1900, -2.3, 2.06, 0.169, -0.0135, 1920,
+            21.2, 1.69, -0.304, 0.0167, 1940, 24.2, 1.22, -0.064, 0.0031, 1960,
+            33.2, 0.51, 0.231, -0.0109, 1980, 51.0, 1.29, -0.026, 0.0032, 2000,
+            64.7, -1.66, 5.224, -0.2905, 2150, 279.4, 732.95, 429.579, 0.0158,
+            6000};
+    /**
+     * 离心率
+     */
+    private static final double GXC_E[] = {0.016708634, -0.000042037,
+            -0.0000001267};
+    /**
+     * 近点
+     */
+    private static final double GXC_P[] = {102.93735 / ANGLE_PER_RAD, 1.71946 / ANGLE_PER_RAD,
+            0.00046 / ANGLE_PER_RAD};
+    /**
+     * 太平黄经
+     */
+    private static final double GXC_L[] = {280.4664567 / ANGLE_PER_RAD,
+            36000.76982779 / ANGLE_PER_RAD, 0.0003032028 / ANGLE_PER_RAD, 1 / 49931000 / ANGLE_PER_RAD,
+            -1 / 153000000 / ANGLE_PER_RAD};
+    /**
+     * 光行差常数
+     */
     private static final double GXC_K = 20.49552 / SECOND_PER_RAD;
-
-    // 黄赤交角系数表
-    private static final double H_C_ANGLE_TABLE[] = {0, 50287.92262, 111.24406, 0.07699, -0.23479, -0.00178, 0.00018, 0.00001};
-
-    // 离心率
-    private static final double GXC_E[] = {0.016708634, -0.000042037, -0.0000001267};
-
-    // 近点
-    private static final double GXC_P[] = {102.93735 / ANGLE_PER_RAD, 1.71946 / ANGLE_PER_RAD, 0.00046 / ANGLE_PER_RAD};
-
-    // 太平黄经
-    private static final double GXC_L[] = {280.4664567 / ANGLE_PER_RAD, 36000.76982779 / ANGLE_PER_RAD, 0.0003032028 / ANGLE_PER_RAD, 1 / 49931000 / ANGLE_PER_RAD, -1 / 153000000 / ANGLE_PER_RAD};
-
-    // 章动计算
+    /**
+     * 章动计算
+     */
     private static final double nutB[] = {// 章动表
             2.1824391966, -33.757045954, 0.0000362262, 3.7340E-08, -2.8793E-10,
             -171996, -1742, 92025, 89, 3.5069406862, 1256.663930738,
@@ -57,21 +89,6 @@ final class CalendarUtil {
             3.5500658664, 628.361975567, 0.0000132664, 1.3575E-09, -1.7245E-10,
             217, -5, -95, 3};
 
-    // 世界时与原子时之差计算表
-    private static final double[] DTS = {
-            -4000, 108371.7, -13036.80, 392.000, 0.0000, -500, 17201.0,
-            -627.82, 16.170, -0.3413, -150, 12200.6, -346.41, 5.403, -0.1593,
-            150, 9113.8, -328.13, -1.647, 0.0377, 500, 5707.5, -391.41, 0.915,
-            0.3145, 900, 2203.4, -283.45, 13.034, -0.1778, 1300, 490.1, -57.35,
-            2.085, -0.0072, 1600, 120.0, -9.81, -1.532, 0.1403, 1700, 10.2,
-            -0.91, 0.510, -0.0370, 1800, 13.4, -0.72, 0.202, -0.0193, 1830,
-            7.8, -1.81, 0.416, -0.0247, 1860, 8.3, -0.13, -0.406, 0.0292, 1880,
-            -5.4, 0.32, -0.183, 0.0173, 1900, -2.3, 2.06, 0.169, -0.0135, 1920,
-            21.2, 1.69, -0.304, 0.0167, 1940, 24.2, 1.22, -0.064, 0.0031, 1960,
-            33.2, 0.51, 0.231, -0.0109, 1980, 51.0, 1.29, -0.026, 0.0032, 2000,
-            64.7, -1.66, 5.224, -0.2905, 2150, 279.4, 732.95, 429.579, 0.0158,
-            6000};
-
     /***************************************
      * 如果用记事本查看此代码,请在"格式"菜单中去除"自动换行"
      * E10是关于地球的,格式如下:
@@ -85,8 +102,8 @@ final class CalendarUtil {
      * E20,E21,E22,E23...用于计算黄纬
      * M10,M11等是关于月球的,参数的用法请阅读Mnn()函数
      *****************************************/
-    // 黄经周期项, 地球运动VSOP87参数
-    private static final double E10[] = {
+    //地球运动VSOP87参数
+    private static final double E10[] = { //黄经周期项
             1.75347045673, 0.00000000000, 0.0000000000, 0.03341656456, 4.66925680417, 6283.0758499914, 0.00034894275, 4.62610241759, 12566.1516999828, 0.00003417571, 2.82886579606, 3.5231183490,
             0.00003497056, 2.74411800971, 5753.3848848968, 0.00003135896, 3.62767041758, 77713.7714681205, 0.00002676218, 4.41808351397, 7860.4193924392, 0.00002342687, 6.13516237631, 3930.2096962196,
             0.00001273166, 2.03709655772, 529.6909650946, 0.00001324292, 0.74246356352, 11506.7697697936, 0.00000901855, 2.04505443513, 26.2983197998, 0.00001199167, 1.10962944315, 1577.3435424478,
@@ -102,33 +119,25 @@ final class CalendarUtil {
             0.00000051145, 0.28306864501, 5856.4776591154, 0.00000055577, 3.47006009062, 6279.5527316424, 0.00000041036, 5.36817351402, 8429.2412664666, 0.00000051605, 1.33282746983, 1748.0164130670,
             0.00000051992, 0.18914945834, 12139.5535091068, 0.00000049000, 0.48735065033, 1194.4470102246, 0.00000039200, 6.16832995016, 10447.3878396044, 0.00000035566, 1.77597314691, 6812.7668150860,
             0.00000036770, 6.04133859347, 10213.2855462110, 0.00000036596, 2.56955238628, 1059.3819301892, 0.00000033291, 0.59309499459, 17789.8456197850, 0.00000035954, 1.70876111898, 2352.8661537718};
-
-    // 黄经泊松1项, 地球运动VSOP87参数
-    private static final double E11[] = {
+    private static final double E11[] = { //黄经泊松1项
             6283.31966747491, 0.00000000000, 0.0000000000, 0.00206058863, 2.67823455584, 6283.0758499914, 0.00004303430, 2.63512650414, 12566.1516999828, 0.00000425264, 1.59046980729, 3.5231183490,
             0.00000108977, 2.96618001993, 1577.3435424478, 0.00000093478, 2.59212835365, 18849.2275499742, 0.00000119261, 5.79557487799, 26.2983197998, 0.00000072122, 1.13846158196, 529.6909650946,
             0.00000067768, 1.87472304791, 398.1490034082, 0.00000067327, 4.40918235168, 5507.5532386674, 0.00000059027, 2.88797038460, 5223.6939198022, 0.00000055976, 2.17471680261, 155.4203994342,
             0.00000045407, 0.39803079805, 796.2980068164, 0.00000036369, 0.46624739835, 775.5226113240, 0.00000028958, 2.64707383882, 7.1135470008, 0.00000019097, 1.84628332577, 5486.7778431750,
             0.00000020844, 5.34138275149, 0.9803210682, 0.00000018508, 4.96855124577, 213.2990954380, 0.00000016233, 0.03216483047, 2544.3144198834, 0.00000017293, 2.99116864949, 6275.9623029906};
-
-    // 黄经泊松2项
-    private static final double E12[] = {
+    private static final double E12[] = { //黄经泊松2项
             0.00052918870, 0.00000000000, 0.0000000000, 0.00008719837, 1.07209665242, 6283.0758499914, 0.00000309125, 0.86728818832, 12566.1516999828, 0.00000027339, 0.05297871691, 3.5231183490,
             0.00000016334, 5.18826691036, 26.2983197998, 0.00000015752, 3.68457889430, 155.4203994342, 0.00000009541, 0.75742297675, 18849.2275499742, 0.00000008937, 2.05705419118, 77713.7714681205,
             0.00000006952, 0.82673305410, 775.5226113240, 0.00000005064, 4.66284525271, 1577.3435424478};
     private static final double E13[] = {0.00000289226, 5.84384198723, 6283.0758499914, 0.00000034955, 0.00000000000, 0.0000000000, 0.00000016819, 5.48766912348, 12566.1516999828};
     private static final double E14[] = {0.00000114084, 3.14159265359, 0.0000000000, 0.00000007717, 4.13446589358, 6283.0758499914, 0.00000000765, 3.83803776214, 12566.1516999828};
     private static final double E15[] = {0.00000000878, 3.14159265359, 0.0000000000};
-
-    // 黄纬周期项, 地球运动VSOP87参数
-    private static final double E20[] = {
+    private static final double E20[] = {  //黄纬周期项
             0.00000279620, 3.19870156017, 84334.6615813083, 0.00000101643, 5.42248619256, 5507.5532386674, 0.00000080445, 3.88013204458, 5223.6939198022, 0.00000043806, 3.70444689758, 2352.8661537718,
             0.00000031933, 4.00026369781, 1577.3435424478, 0.00000022724, 3.98473831560, 1047.7473117547, 0.00000016392, 3.56456119782, 5856.4776591154, 0.00000018141, 4.98367470263, 6283.0758499914,
             0.00000014443, 3.70275614914, 9437.7629348870, 0.00000014304, 3.41117857525, 10213.2855462110};
     private static final double E21[] = {0.00000009030, 3.89729061890, 5507.5532386674, 0.00000006177, 1.73038850355, 5223.6939198022};
-
-    // 距离周期项, 地球运动VSOP87参数
-    private static final double E30[] = {
+    private static final double E30[] = {  //距离周期项
             1.00013988799, 0.00000000000, 0.0000000000, 0.01670699626, 3.09846350771, 6283.0758499914, 0.00013956023, 3.05524609620, 12566.1516999828, 0.00003083720, 5.19846674381, 77713.7714681205,
             0.00001628461, 1.17387749012, 5753.3848848968, 0.00001575568, 2.84685245825, 7860.4193924392, 0.00000924799, 5.45292234084, 11506.7697697936, 0.00000542444, 4.56409149777, 3930.2096962196};
     private static final double E31[] = {0.00103018608, 1.10748969588, 6283.0758499914, 0.00001721238, 1.06442301418, 12566.1516999828, 0.00000702215, 3.14159265359, 0.0000000000};
@@ -137,7 +146,7 @@ final class CalendarUtil {
 
     //
     private static final double E33[] = {0.00000144595, 4.27319435148, 6283.0758499914};
-    //月球运动参数, 地球运动VSOP87参数
+    //月球运动参数
     private static final double M10[] = {
             22639.5858800, 2.3555545723, 8328.6914247251, 1.5231275E-04, 2.5041111E-07, -1.1863391E-09, 4586.4383203, 8.0413790709, 7214.0628654588, -2.1850087E-04, -1.8646419E-07, 8.7760973E-10, 2369.9139357, 10.3969336431, 15542.7542901840, -6.6188121E-05, 6.3946925E-08, -3.0872935E-10, 769.0257187, 4.7111091445, 16657.3828494503, 3.0462550E-04, 5.0082223E-07, -2.3726782E-09,
             -666.4175399, -0.0431256817, 628.3019552485, -2.6638815E-06, 6.1639211E-10, -5.4439728E-11, -411.5957339, 3.2558104895, 16866.9323152810, -1.2804259E-04, -9.8998954E-09, 4.0433461E-11, 211.6555524, 5.6858244986, -1114.6285592663, -3.7081362E-04, -4.3687530E-07, 2.0639488E-09, 205.4359530, 8.0845047526, 6585.7609102104, -2.1583699E-04, -1.8708058E-07, 9.3204945E-10,
@@ -304,11 +313,11 @@ final class CalendarUtil {
     /**
      * 判断一个日期是否是周末，即周六日
      *
-     * @param calendar calendar
+     * @param calendarModel calendarModel
      * @return 判断一个日期是否是周末，即周六日
      */
-    public static boolean isWeekend(Calendar calendar) {
-        int week = getWeekFormCalendar(calendar);
+    public static boolean isWeekend(CalendarModel calendarModel) {
+        int week = getWeekFormCalendar(calendarModel);
         return week == 0 || week == 6;
     }
 
@@ -406,25 +415,25 @@ final class CalendarUtil {
     /**
      * 获取某天在该月的第几周
      *
-     * @param calendar calendar
+     * @param calendarModel calendarModel
      * @return 获取某天在该月的第几周
      */
-    public static int getWeekFromDayInMonth(Calendar calendar) {
+    public static int getWeekFromDayInMonth(CalendarModel calendarModel) {
         java.util.Calendar date = java.util.Calendar.getInstance();
-        date.set(calendar.getYear(), calendar.getMonth() - 1, 1);
+        date.set(calendarModel.getYear(), calendarModel.getMonth() - 1, 1);
         int diff = date.get(java.util.Calendar.DAY_OF_WEEK) - 1;//该月第一天为星期几,星期天 == 0，也就是偏移量
-        return (calendar.getDay() + diff - 1) / 7 + 1;
+        return (calendarModel.getDay() + diff - 1) / 7 + 1;
     }
 
     /**
      * 获取某个日期是星期几
      *
-     * @param calendar 某个日期
+     * @param calendarModel 某个日期
      * @return 返回某个日期是星期几
      */
-    public static int getWeekFormCalendar(Calendar calendar) {
+    public static int getWeekFormCalendar(CalendarModel calendarModel) {
         java.util.Calendar date = java.util.Calendar.getInstance();
-        date.set(calendar.getYear(), calendar.getMonth() - 1, calendar.getDay());
+        date.set(calendarModel.getYear(), calendarModel.getMonth() - 1, calendarModel.getDay());
         return date.get(java.util.Calendar.DAY_OF_WEEK) - 1;
     }
 
@@ -473,18 +482,18 @@ final class CalendarUtil {
         return count / 7;
     }
 
-    public static boolean isCalendarInRange(Calendar calendar, int minYear, int minYearMonth, int maxYear, int maxYearMonth) {
+    public static boolean isCalendarInRange(CalendarModel calendarModel, int minYear, int minYearMonth, int maxYear, int maxYearMonth) {
         java.util.Calendar c = java.util.Calendar.getInstance();
         c.set(minYear, minYearMonth - 1, 1);
         long minTime = c.getTimeInMillis();
         c.set(maxYear, maxYearMonth - 1, getMonthDaysCount(maxYear, maxYearMonth));
         long maxTime = c.getTimeInMillis();
-        c.set(calendar.getYear(), calendar.getMonth() - 1, calendar.getDay());
+        c.set(calendarModel.getYear(), calendarModel.getMonth() - 1, calendarModel.getDay());
         long curTime = c.getTimeInMillis();
         return curTime >= minTime && curTime <= maxTime;
     }
 
-//    public static boolean isCalendarInRange(Calendar calendar, CalendarDelegate delegate) {
+//    public static boolean isCalendarInRange(CalendarModel calendar, CalendarDelegate delegate) {
 //        return isCalendarInRange(calendar, delegate.getMinYear(), delegate.getMinYearMonth(),
 //                delegate.getMaxYear(), delegate.getMaxYearMonth());
 //    }
@@ -999,12 +1008,12 @@ final class CalendarUtil {
         }
     }
 
-    public static int getWeekFromCalendarBetweenYearAndYear(Calendar calendar, int minYear, int minYearMonth) {
+    public static int getWeekFromCalendarBetweenYearAndYear(CalendarModel calendarModel, int minYear, int minYearMonth) {
         java.util.Calendar date = java.util.Calendar.getInstance();
         date.set(minYear, 0, 1);//1月1日
         long firstTime = date.getTimeInMillis();//获得起始时间戳
         int preDiff = date.get(java.util.Calendar.DAY_OF_WEEK) - 1;//1月第一天为星期几,星期天 == 0，也就是偏移量
-        date.set(calendar.getYear(), calendar.getMonth() - 1, calendar.getWeek() == 0 ? calendar.getDay() + 1 : calendar.getDay());
+        date.set(calendarModel.getYear(), calendarModel.getMonth() - 1, calendarModel.getWeek() == 0 ? calendarModel.getDay() + 1 : calendarModel.getDay());
         long curTime = date.getTimeInMillis();//给定时间戳
         int c = (int) ((curTime - firstTime) / ONE_DAY);
         int count = preDiff + c;
@@ -1175,53 +1184,53 @@ final class CalendarUtil {
     /**
      * 初始化各种农历、节日
      *
-     * @param calendar calendar
+     * @param calendarModel calendarModel
      */
-    static void setupLunarCalendar(Calendar calendar) {
-        int year = calendar.getYear();
-        int month = calendar.getMonth();
-        int day = calendar.getDay();
-        calendar.setWeekend(isWeekend(calendar));
-        calendar.setWeek(getWeekFormCalendar(calendar));
+    static void setupLunarCalendar(CalendarModel calendarModel) {
+        int year = calendarModel.getYear();
+        int month = calendarModel.getMonth();
+        int day = calendarModel.getDay();
+        calendarModel.setWeekend(isWeekend(calendarModel));
+        calendarModel.setWeek(getWeekFormCalendar(calendarModel));
 
-        Calendar lunarCalendar = new Calendar();
-//        calendar.setLunarCakendar(lunarCalendar);
+        CalendarModel lunarCalendarModel = new CalendarModel();
+//        calendarModel.setLunarCakendar(lunarCalendarModel);
         int[] lunar = solarToLunar(year, month, day);
-        lunarCalendar.setYear(lunar[0]);
-        lunarCalendar.setMonth(lunar[1]);
-        lunarCalendar.setDay(lunar[2]);
-        calendar.setLeapYear(isLeapYear(year));
+        lunarCalendarModel.setYear(lunar[0]);
+        lunarCalendarModel.setMonth(lunar[1]);
+        lunarCalendarModel.setDay(lunar[2]);
+        calendarModel.setLeapYear(isLeapYear(year));
         if (lunar[3] == 1) {//如果是闰月
-            calendar.setLeapMonth(true);
-            lunarCalendar.setLeapMonth(true);
+            calendarModel.setLeapMonth(true);
+            lunarCalendarModel.setLeapMonth(true);
         }
         String solarTerm = getSolarTerm(year, month, day);
         String gregorian = gregorianFestival(month, day);
         String festival = getTraditionFestival(lunar[0], lunar[1], lunar[2]);
-        calendar.setSolarTerm(solarTerm);
-        calendar.setGregorianFestival(gregorian);
-        calendar.setTraditionFestival(festival);
-        lunarCalendar.setTraditionFestival(festival);
-        lunarCalendar.setSolarTerm(solarTerm);
+        calendarModel.setSolarTerm(solarTerm);
+        calendarModel.setGregorianFestival(gregorian);
+        calendarModel.setTraditionFestival(festival);
+        lunarCalendarModel.setTraditionFestival(festival);
+        lunarCalendarModel.setSolarTerm(solarTerm);
         if (!TextUtils.isEmpty(solarTerm)) {
-            calendar.setLunar(solarTerm);
+            calendarModel.setLunar(solarTerm);
         } else if (!TextUtils.isEmpty(gregorian)) {
-            calendar.setLunar(gregorian);
+            calendarModel.setLunar(gregorian);
         } else if (!TextUtils.isEmpty(festival)) {
-            calendar.setLunar(festival);
+            calendarModel.setLunar(festival);
         } else {
-            calendar.setLunar(numToChinese(lunar[1], lunar[2], lunar[3]));
+            calendarModel.setLunar(numToChinese(lunar[1], lunar[2], lunar[3]));
         }
-        lunarCalendar.setLunar(calendar.getLunar());
+        lunarCalendarModel.setLunar(calendarModel.getLunar());
     }
 
     /**
      * 获取农历节日
      *
-     * @param calendar calendar
+     * @param calendarModel calendarModel
      * @return 获取农历节日
      */
-    static String getLunarText(Calendar calendar) {
-        return getLunarText(calendar.getYear(), calendar.getMonth(), calendar.getDay());
+    static String getLunarText(CalendarModel calendarModel) {
+        return getLunarText(calendarModel.getYear(), calendarModel.getMonth(), calendarModel.getDay());
     }
 }

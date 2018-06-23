@@ -6,7 +6,7 @@ import java.io.Serializable;
  * description: 日历对象
  * created by kalu on 2018/4/10 23:08
  */
-public final class Calendar implements Serializable {
+public final class CalendarModel implements Serializable {
 
     /**
      * isSchemes:   是否有标记
@@ -223,8 +223,8 @@ public final class Calendar implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (o != null && o instanceof Calendar) {
-            if (((Calendar) o).getYear() == year && ((Calendar) o).getMonth() == month && ((Calendar) o).getDay() == day)
+        if (o != null && o instanceof CalendarModel) {
+            if (((CalendarModel) o).getYear() == year && ((CalendarModel) o).getMonth() == month && ((CalendarModel) o).getDay() == day)
                 return true;
         }
         return super.equals(o);

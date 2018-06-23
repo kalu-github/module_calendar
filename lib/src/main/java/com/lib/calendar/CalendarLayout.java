@@ -85,7 +85,7 @@ public final class CalendarLayout extends LinearLayout {
             Log.e("", e.getMessage(), e);
             weekBar = new WeekBar(getContext());
         }
-        LinearLayout.LayoutParams weekBarParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, weekHeight);
+        LayoutParams weekBarParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, weekHeight);
         weekBar.setLayoutParams(weekBarParams);
         weekBar.setBackgroundColor(weekBgcolor);
         weekBar.setTextSize(weekTextsize);
@@ -95,7 +95,7 @@ public final class CalendarLayout extends LinearLayout {
         // 2.日期
         final RecyclerView recyclerView = new RecyclerView(getContext().getApplicationContext());
         recyclerView.setBackgroundColor(Color.WHITE);
-        LinearLayout.LayoutParams paramsRecyclerView = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        LayoutParams paramsRecyclerView = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         paramsRecyclerView.setMargins(10, 10, 10, 10);
         recyclerView.setLayoutParams(paramsRecyclerView);
         addView(recyclerView);
@@ -175,7 +175,10 @@ public final class CalendarLayout extends LinearLayout {
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            final BaseView view = new MonthView(getContext().getApplicationContext());
+            final BaseCalendarView view = new MonthView(getContext().getApplicationContext());
+            if (null != mOnCalendarChangeListener) {
+                view.setOnCalendarChangeListener(mOnCalendarChangeListener);
+            }
             view.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             return new RecyclerHolder(view);
         }
