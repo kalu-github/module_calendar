@@ -20,14 +20,22 @@ final class MonthView extends BaseCalendarView {
     @Override
     protected void onDrawSign(Canvas canvas, CalendarModel calendarModel, int left, int top, int itemWidth, int itemHeight) {
 
+        final CalendarModel.SchemeModel schemeModel = calendarModel.getSchemeModel();
+        if (null == schemeModel)
+            return;
+
         // 1.底部圆点
-        final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.BIUE);
-        canvas.drawCircle(left + itemWidth * 0.5f, top + itemHeight * 0.96f, mDotRadius, dotPaint);
+        if (schemeModel.isWarning()) {
+            final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.BIUE);
+            canvas.drawCircle(left + itemWidth * 0.5f, top + itemHeight * 0.96f, mDotRadius, dotPaint);
+        }
         // 2.右上角文字
-        final Paint lunarPaint = CalendarPaint.getTextPaint(CalendarPaint.RED, 24f);
-        lunarPaint.setFakeBoldText(true);
-        final float font = (lunarPaint.getFontMetrics().bottom - lunarPaint.getFontMetrics().top) * 0.3f;
-        canvas.drawText(calendarModel.getSchemesStr(), left + itemWidth * 0.82f, top + itemHeight * 0.18f + font, lunarPaint);
+        if (schemeModel.isDiagnose()) {
+            final Paint lunarPaint = CalendarPaint.getTextPaint(CalendarPaint.RED, 24f);
+            lunarPaint.setFakeBoldText(true);
+            final float font = (lunarPaint.getFontMetrics().bottom - lunarPaint.getFontMetrics().top) * 0.3f;
+            canvas.drawText(schemeModel.getScheme(), left + itemWidth * 0.82f, top + itemHeight * 0.18f + font, lunarPaint);
+        }
     }
 
     @Override

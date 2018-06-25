@@ -69,6 +69,9 @@ final class CalendartManager extends LinearLayoutManager implements RecyclerView
         super.onLayoutCompleted(state);
         if (null == mOnPagerChangeListener) return;
         mOnPagerChangeListener.onPageFinish();
+        View viewIdle = mPagerSnapHelper.findSnapView(this);
+        int positionIdle = getPosition(viewIdle);
+        mOnPagerChangeListener.onPageSelect(positionIdle, true, false);
     }
 
     @Override
@@ -101,7 +104,7 @@ final class CalendartManager extends LinearLayoutManager implements RecyclerView
 
         void onPageDetach(boolean isNext, int position);
 
-        void onPageSelect(int position, boolean isTop, boolean isBottom);
+        void onPageSelect(int position, boolean isFirst, boolean isLast);
 
         void onPageFinish();
     }

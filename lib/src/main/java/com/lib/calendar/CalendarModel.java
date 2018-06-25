@@ -17,27 +17,9 @@ public final class CalendarModel implements Serializable {
      * isLeapYear： 是否闰年
      * isLeapMonth: 是否闰月
      */
-    private boolean isSchemes = false, isToady = false, isSelect = false, isPress = false, isCurMonth = false, isLeapYear = false, isLeapMonth = false;
+    private boolean isToady = false, isSelect = false, isPress = false, isCurMonth = false, isLeapYear = false, isLeapMonth = false;
 
     private int year, month, day;
-
-    private String schemesStr = "";
-
-    public boolean isSchemes() {
-        return isSchemes;
-    }
-
-    public void setSchemes(boolean schemes) {
-        isSchemes = schemes;
-    }
-
-    public String getSchemesStr() {
-        return schemesStr;
-    }
-
-    public void setSchemesStr(String schemesStr) {
-        this.schemesStr = schemesStr;
-    }
 
     public boolean isPress() {
         return isPress;
@@ -75,18 +57,6 @@ public final class CalendarModel implements Serializable {
      * 传统农历节日
      */
     private String traditionFestival;
-
-    /**
-     * 计划，可以用来标记当天是否有任务,这里是默认的，如果使用多标记，请使用下面API
-     * using addScheme(int schemeColor,String scheme); multi scheme
-     */
-    private String scheme;
-
-    /**
-     * 各种自定义标记颜色、没有则选择默认颜色，如果使用多标记，请使用下面API
-     * using addScheme(int schemeColor,String scheme); multi scheme
-     */
-    private int schemeColor;
 
     /**
      * 是否是周末
@@ -144,25 +114,6 @@ public final class CalendarModel implements Serializable {
 
     public void setLunar(String lunar) {
         this.lunar = lunar;
-    }
-
-
-    public String getScheme() {
-        return scheme;
-    }
-
-
-    public void setScheme(String scheme) {
-        this.scheme = scheme;
-    }
-
-
-    public int getSchemeColor() {
-        return schemeColor;
-    }
-
-    public void setSchemeColor(int schemeColor) {
-        this.schemeColor = schemeColor;
     }
 
     public boolean isWeekend() {
@@ -235,5 +186,34 @@ public final class CalendarModel implements Serializable {
         return year + "" + (month < 10 ? "0" + month : month) + "" + (day < 10 ? "0" + day : day);
     }
 
+    public String getKey() {
+        return year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
+    }
+
     /*******************************************************/
+
+    private SchemeModel schemeModel = null;
+
+    public boolean isSchemes() {
+        return (null != schemeModel && (schemeModel.isDiagnose() || schemeModel.isWarning()));
+    }
+
+    public void setSchemeModel(SchemeModel schemeModel) {
+        this.schemeModel = schemeModel;
+    }
+
+    public SchemeModel getSchemeModel() {
+        return schemeModel;
+    }
+
+    public interface SchemeModel {
+
+        String getKey();
+
+        boolean isDiagnose();
+
+        boolean isWarning();
+
+        String getScheme();
+    }
 }

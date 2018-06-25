@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * description: 日历基类
@@ -228,8 +229,6 @@ public abstract class BaseCalendarView extends View {
             // 今天日子
             if (year == mCalendarModelToday.getYear() && month == mCalendarModelToday.getMonth() && day == mCalendarModelToday.getDay()) {
                 calendarModelDate.setToady(true);
-                calendarModelDate.setSchemes(true);
-                calendarModelDate.setSchemesStr("诊");
             }
             // 选中日子
             if (year == mCalendarModelSelect.getYear() && month == mCalendarModelSelect.getMonth() && day == mCalendarModelSelect.getDay()) {
@@ -238,6 +237,10 @@ public abstract class BaseCalendarView extends View {
             mItems.add(calendarModelDate);
         }
         postInvalidate();
+    }
+
+    public List<CalendarModel> getModelList() {
+        return mItems;
     }
 
     /***************************************************************************************************************************/
@@ -253,7 +256,7 @@ public abstract class BaseCalendarView extends View {
 
     /**************************************************************************************************************************/
 
-    CalendarLayout.OnCalendarChangeListener mOnCalendarChangeListener;
+    private CalendarLayout.OnCalendarChangeListener mOnCalendarChangeListener;
 
     public void setOnCalendarChangeListener(CalendarLayout.OnCalendarChangeListener listener) {
         this.mOnCalendarChangeListener = listener;

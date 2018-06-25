@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 
 /**
  * description: 日历布局
@@ -105,11 +106,12 @@ public final class CalendarLayout extends LinearLayout {
         mPagerLayoutManager.setOnPagerChangeListener(new CalendartManager.OnPagerChangeListener() {
 
             @Override
-            public void onPageSelect(int position, boolean isTop, boolean isBottom) {
-                if (null == mOnCalendarChangeListener) return;
-                final int year = (position + minYearMonth - 1) / 12 + minYear;
-                final int month = ((position + minYearMonth - 1) % 12 + 1);
-                mOnCalendarChangeListener.onCalendarChange(year, month, 1, false);
+            public void onPageSelect(int position, boolean isFirst, boolean isLast) {
+                if (null != mOnCalendarChangeListener) {
+                    final int year = (position + minYearMonth - 1) / 12 + minYear;
+                    final int month = ((position + minYearMonth - 1) % 12 + 1);
+                    mOnCalendarChangeListener.onCalendarChange(year, month, 1, false);
+                }
             }
 
             @Override
@@ -151,23 +153,59 @@ public final class CalendarLayout extends LinearLayout {
             final int position = month - 1;
             mPagerLayoutManager.scrollToPositionWithOffset(position, 0);
             mPagerLayoutManager.setStackFromEnd(true);
-            if (null != mOnCalendarChangeListener) {
-                mOnCalendarChangeListener.onCalendarChange(year, month, day, false);
-            }
         } else {
             int position;
             if (minYearMonth == 1) {
-                position = 12 * (year - minYear - 1) + 12 + month;
+                position = 12 * (year - minYear - 1) + 12 + month - 1;
             } else {
-                position = 12 * (year - minYear - 1) + (12 - minYearMonth) + month;
+                position = 12 * (year - minYear - 1) + (12 - minYearMonth) + month - 1;
             }
 
-            //  Log.e("onCalendarChange22", "position = " + position);
             mPagerLayoutManager.scrollToPositionWithOffset(position, 0);
             mPagerLayoutManager.setStackFromEnd(true);
-            if (null != mOnCalendarChangeListener) {
-                mOnCalendarChangeListener.onCalendarChange(year, month, day, false);
+        }
+    }
+
+    public void setRange(int minYear, int minYearMonth, int maxYear, int maxYearMonth) {
+        this.minYear = minYear;
+        this.maxYear = maxYear;
+        this.minYearMonth = minYearMonth;
+        this.maxYearMonth = maxYearMonth;
+    }
+
+    public void setScheme(List<CalendarModel.SchemeModel> schemeList) {
+
+        if (null == mPagerLayoutManager)
+            return;
+
+        try {
+
+            final int firstVisibleItemPosition = mPagerLayoutManager.findFirstVisibleItemPosition();
+            if (firstVisibleItemPosition < 0)
+                return;
+
+            final View view = mPagerLayoutManager.findViewByPosition(firstVisibleItemPosition);
+            if (null == view || !(view instanceof BaseCalendarView))
+                return;
+
+            final BaseCalendarView month = (BaseCalendarView) view;
+
+            final List<CalendarModel> modelList = month.getModelList();
+            if (null == modelList || modelList.size() == 0)
+                return;
+
+            for (CalendarModel.SchemeModel scheme : schemeList) {
+                for (CalendarModel model : modelList) {
+                    if (scheme.getKey().startsWith(model.getKey())) {
+                        model.setSchemeModel(scheme);
+                    }
+                }
             }
+
+            month.postInvalidate();
+
+        } catch (Exception e) {
+            Log.e("", e.getMessage(), e);
         }
     }
 
