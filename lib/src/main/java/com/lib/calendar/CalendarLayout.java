@@ -2,12 +2,13 @@ package com.lib.calendar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -16,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import java.lang.reflect.Constructor;
 import java.util.Calendar;
 import java.util.List;
 
@@ -24,7 +24,7 @@ import java.util.List;
  * description: 日历布局
  * created by kalu on 2018/6/9 10:53
  */
-public final class CalendarLayout extends LinearLayout {
+public final class CalendarLayout extends RecyclerView {
 
     private final CalendartManager mPagerLayoutManager = new CalendartManager(getContext().getApplicationContext(), LinearLayout.HORIZONTAL, false);
 
@@ -42,9 +42,7 @@ public final class CalendarLayout extends LinearLayout {
 
     public CalendarLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        setOrientation(LinearLayout.VERTICAL);
 
-        String weekClassname = "";
         int weekTextcolor = Color.BLACK;
         int weekBgcolor = Color.TRANSPARENT;
         int weekHeight = (int) (40 * getResources().getDisplayMetrics().density);
@@ -67,7 +65,6 @@ public final class CalendarLayout extends LinearLayout {
             weekBgcolor = typed.getColor(R.styleable.CalendarLayout_cl_week_bg_color, weekBgcolor);
             weekTextcolor = typed.getColor(R.styleable.CalendarLayout_cl_week_text_color, weekTextcolor);
             weekTextsize = typed.getDimension(R.styleable.CalendarLayout_cl_week_text_size, weekTextsize);
-            weekClassname = typed.getString(R.styleable.CalendarLayout_cl_week_class);
         } catch (Exception e) {
             Log.e("", e.getMessage(), e);
         } finally {
@@ -76,25 +73,37 @@ public final class CalendarLayout extends LinearLayout {
             }
         }
 
-        // 1.星期栏
-        WeekBar weekBar;
-        try {
-            if (TextUtils.isEmpty(weekClassname)) {
-                weekBar = new WeekBar(getContext());
-            } else {
-                final Constructor constructor = Class.forName(weekClassname).getConstructor(Context.class);
-                weekBar = (WeekBar) constructor.newInstance(getContext().getApplicationContext());
-            }
-        } catch (Exception e) {
-            Log.e("", e.getMessage(), e);
-            weekBar = new WeekBar(getContext());
+        setPadding(getLeft(), getTop() + weekHeight, getRight(), getBottom());
+    }
+
+    @Override
+    public void onDraw(Canvas canvas) {
+
+        final Paint textPaint = CalendarPaint.getTextPaint(Color.BLACK, 35);
+        float font = (textPaint.getFontMetrics().bottom - textPaint.getFontMetrics().top) / 3;
+        final int width = getWidth() / 7;
+        final int centerY = getPaddingTop() / 2;
+        for (int i = 0; i < 7; i++) {
+            float x = width * i + width / 2;
+            canvas.drawText(String.valueOf(i), x, centerY + font, textPaint);
         }
-        LayoutParams weekBarParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, weekHeight);
-        weekBar.setLayoutParams(weekBarParams);
-        weekBar.setBackgroundColor(weekBgcolor);
-        weekBar.setTextSize(weekTextsize);
-        weekBar.setTextColor(weekTextcolor);
-        addView(weekBar);
+        final float line = 1f * getResources().getDisplayMetrics().density;
+        final Paint linePaint = CalendarPaint.getLinePaint(Color.parseColor("#66e6e6e6"));
+        canvas.drawLine(0, 0, getWidth(), line, linePaint);
+        canvas.drawLine(0, getPaddingTop() - line, getWidth(), getPaddingTop(), linePaint);
+        final Paint backgroundPaint = CalendarPaint.getBackgroundPaint(CalendarPaint.GREEN);
+        canvas.drawRect(0, 0, getWidth(), getPaddingTop(), backgroundPaint);
+
+        final Paint backgroundPaint2 = CalendarPaint.getBackgroundPaint(CalendarPaint.WHITE);
+        canvas.drawRect(0, getPaddingTop(), getWidth(), getHeight(), backgroundPaint2);
+        super.onDraw(canvas);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getY() <= getPaddingTop())
+            return false;
+        return super.dispatchTouchEvent(ev);
     }
 
     public void notifyDataSetChanged() {
@@ -107,34 +116,21 @@ public final class CalendarLayout extends LinearLayout {
 
     public void notifyDataSetChanged(int year, @IntRange(from = 1, to = 12) int month, int day) {
 
-        final RecyclerView recyclerView = new RecyclerView(getContext().getApplicationContext());
-        recyclerView.setBackgroundColor(Color.WHITE);
-        LayoutParams paramsRecyclerView = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        paramsRecyclerView.setMargins(10, 10, 10, 10);
-        recyclerView.setLayoutParams(paramsRecyclerView);
-        addView(recyclerView);
-
-        recyclerView.setLayoutManager(mPagerLayoutManager);
-        recyclerView.setAdapter(new CalendarAdapter());
+        if (maxYear < minYear || minYearMonth < 1 || maxYearMonth > 12) {
+            throw new RuntimeException("初始化参数写错了");
+        }
+        setLayoutManager(mPagerLayoutManager);
+        setAdapter(new CalendarAdapter());
 
         selectDay = day;
         selectYear = year;
         selectMonth = month;
 
-        if (year < minYear) {
-            year = minYear;
-        }
-
         if (year == minYear) {
             final int position = month - 1;
             mPagerLayoutManager.scrollToPositionWithOffset(position, 0);
         } else {
-            int position;
-            if (minYearMonth == 1) {
-                position = 12 * (year - minYear - 1) + 12 + month - 1;
-            } else {
-                position = 12 * (year - minYear - 1) + (12 - minYearMonth) + month - 1;
-            }
+            int position = 12 * (year - minYear - 1) + (1 - minYearMonth) + month;
             mPagerLayoutManager.scrollToPositionWithOffset(position, 0);
         }
 
@@ -177,21 +173,21 @@ public final class CalendarLayout extends LinearLayout {
         });
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
-                getParent().requestDisallowInterceptTouchEvent(true);
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                getParent().requestDisallowInterceptTouchEvent(false);
-                break;
-        }
-        return super.dispatchTouchEvent(ev);
-    }
+//    @Override
+//    public boolean dispatchTouchEvent(MotionEvent ev) {
+//
+//        switch (ev.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//            case MotionEvent.ACTION_MOVE:
+//                getParent().requestDisallowInterceptTouchEvent(true);
+//                break;
+//            case MotionEvent.ACTION_UP:
+//            case MotionEvent.ACTION_CANCEL:
+//                getParent().requestDisallowInterceptTouchEvent(false);
+//                break;
+//        }
+//        return super.dispatchTouchEvent(ev);
+//    }
 
     public void setRange(int minYear, @IntRange(from = 1, to = 12) int minYearMonth, int maxYear, @IntRange(from = 1, to = 12) int maxYearMonth) {
         this.minYear = minYear;

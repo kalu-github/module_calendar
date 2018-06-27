@@ -19,9 +19,8 @@
     <com.lib.calendar.CalendarLayout
         android:id="@+id/calendar"
         android:layout_width="match_parent"
-        android:layout_height="360dp"
+        android:layout_height="300dp"
         android:layout_gravity="center"
-        android:background="@color/green_100"
         android:padding="5dp"
         app:cl_bg_select_color="@color/color_bg_theme_press"
         app:cl_bg_today_color="@color/color_bg_theme"

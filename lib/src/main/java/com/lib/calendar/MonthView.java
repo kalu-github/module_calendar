@@ -26,10 +26,10 @@ final class MonthView extends BaseCalendarView {
 
         // 1.底部圆点
         if (schemeModel.isWarning()) {
-            final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.RED);
+            final Paint dotPaint = CalendarPaint.getBackgroundPaint(CalendarPaint.RED);
             canvas.drawCircle(left + itemWidth * 0.5f, top + itemHeight * 0.95f, mDotRadius, dotPaint);
         }else{
-            final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.GREEN);
+            final Paint dotPaint = CalendarPaint.getBackgroundPaint(CalendarPaint.GREEN);
             canvas.drawCircle(left + itemWidth * 0.5f, top + itemHeight * 0.95f, mDotRadius, dotPaint);
         }
         // 2.右上角文字
@@ -72,11 +72,11 @@ final class MonthView extends BaseCalendarView {
 
         if (calendarModel.isToady()) {
             final float radius = Math.min(width, height) * 0.38f;
-            final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.GREEN);
+            final Paint dotPaint = CalendarPaint.getBackgroundPaint(CalendarPaint.GREEN);
             canvas.drawCircle(cx, cy, radius, dotPaint);
         }else if (calendarModel.isSelect()) {
             final float radius = Math.min(width, height) * 0.38f;
-            final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.GREY);
+            final Paint dotPaint = CalendarPaint.getBackgroundPaint(CalendarPaint.GREY);
             canvas.drawCircle(cx, cy, radius, dotPaint);
         }
 //        else if (calendarModel.isPress()) {

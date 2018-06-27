@@ -1,9 +1,7 @@
 package com.lib.calendar;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.TypedValue;
 
 /**
  * description: 画笔
@@ -24,7 +22,7 @@ final class CalendarPaint {
     public static final int PRESS = Color.parseColor("#33cccccc");
     public static final int RED = Color.RED;
 
-    public static Paint getBackgroundPaint(Context context, int color) {
+    public static Paint getBackgroundPaint(int color) {
 
         mPaint.clearShadowLayer();
         mPaint.reset();
@@ -34,10 +32,9 @@ final class CalendarPaint {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setFakeBoldText(false);
         mPaint.setColor(color);
-        mPaint.setAlpha(255);
         mPaint.setTextAlign(Paint.Align.CENTER);
         mPaint.setTextSize(0f);
-        mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10f, context.getResources().getDisplayMetrics()));
+        mPaint.setTextSize(0f);
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         return mPaint;
@@ -56,6 +53,24 @@ final class CalendarPaint {
         mPaint.setColor(color);
         mPaint.setTextAlign(Paint.Align.CENTER);
         mPaint.setTextSize(textSize);
+        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+
+        return mPaint;
+    }
+
+    public static Paint getLinePaint(int color) {
+
+        mPaint.clearShadowLayer();
+        mPaint.reset();
+
+        mPaint.setAntiAlias(true);
+        mPaint.setAlpha(255);
+        mPaint.setStrokeJoin(Paint.Join.ROUND);
+        mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaint.setFakeBoldText(false);
+        mPaint.setColor(color);
+        mPaint.setTextAlign(Paint.Align.CENTER);
+        mPaint.setTextSize(0f);
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         return mPaint;
