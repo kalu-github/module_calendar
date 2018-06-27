@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lib.calendar.CalendarLayout;
 
@@ -23,6 +24,11 @@ public class MainActivity extends Activity {
             @Override
             public void onCalendarChange(int year, int month, int day, int maxDay, boolean isClick, boolean isInflate) {
                 date.setText(year + "年" + month + "月");
+                if (isClick) {
+                    Toast.makeText(getApplicationContext(), "点击:" + year + "-" + month + "-" + day, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "切换:" + year + "-" + month + "-" + day, Toast.LENGTH_SHORT).show();
+                }
                 //    Log.e("onCalendarChange", year + " == " + month + " == " + day + " == " + isClick);
             }
         });
