@@ -26,8 +26,11 @@ final class MonthView extends BaseCalendarView {
 
         // 1.底部圆点
         if (schemeModel.isWarning()) {
-            final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.BIUE);
-            canvas.drawCircle(left + itemWidth * 0.5f, top + itemHeight * 0.96f, mDotRadius, dotPaint);
+            final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.RED);
+            canvas.drawCircle(left + itemWidth * 0.5f, top + itemHeight * 0.95f, mDotRadius, dotPaint);
+        }else{
+            final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.GREEN);
+            canvas.drawCircle(left + itemWidth * 0.5f, top + itemHeight * 0.95f, mDotRadius, dotPaint);
         }
         // 2.右上角文字
         if (schemeModel.isDiagnose()) {
@@ -43,11 +46,11 @@ final class MonthView extends BaseCalendarView {
 
         int color;
         if (calendarModel.isToady()) {
-            color = CalendarPaint.RED;
+            color = CalendarPaint.WHITE;
         } else if (calendarModel.isSelect()) {
-            color = CalendarPaint.BIUE;
+            color = CalendarPaint.WHITE;
         } else {
-            color = calendarModel.isCurMonth() ? CalendarPaint.BLACK : CalendarPaint.GRAAY;
+            color = calendarModel.isCurMonth() ? CalendarPaint.BLACK : CalendarPaint.GREY;
         }
 
         // 1.日期
@@ -71,18 +74,15 @@ final class MonthView extends BaseCalendarView {
             final float radius = Math.min(width, height) * 0.38f;
             final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.GREEN);
             canvas.drawCircle(cx, cy, radius, dotPaint);
-        }
-
-        if (calendarModel.isSelect()) {
+        }else if (calendarModel.isSelect()) {
             final float radius = Math.min(width, height) * 0.38f;
-            final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.ORANGE);
+            final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.GREY);
             canvas.drawCircle(cx, cy, radius, dotPaint);
         }
-
-        if (calendarModel.isPress()) {
-            final float radius = Math.min(width, height) * 0.38f;
-            final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.GRAAY);
-            canvas.drawCircle(cx, cy, radius, dotPaint);
-        }
+//        else if (calendarModel.isPress()) {
+//            final float radius = Math.min(width, height) * 0.38f;
+//            final Paint dotPaint = CalendarPaint.getBackgroundPaint(getContext().getApplicationContext(), CalendarPaint.PRESS);
+//            canvas.drawCircle(cx, cy, radius, dotPaint);
+//        }
     }
 }

@@ -17,11 +17,11 @@ final class CalendarPaint {
     public static final int TRANSPARENT = Color.TRANSPARENT;
     public static final int WHITE = Color.WHITE;
     public static final int GREEN = Color.parseColor("#dd13ad67");
-    public static final int GRAAY = Color.parseColor("#44666666");
     public static final int BLACK = Color.BLACK;
     public static final int BLACK_LUNAR = Color.parseColor("#ee000000");
     public static final int BIUE = Color.BLUE;
     public static final int GREY = Color.parseColor("#cccccc");
+    public static final int PRESS = Color.parseColor("#33cccccc");
     public static final int RED = Color.RED;
 
     public static Paint getBackgroundPaint(Context context, int color) {

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1232,5 +1233,43 @@ final class CalendarUtil {
      */
     static String getLunarText(CalendarModel calendarModel) {
         return getLunarText(calendarModel.getYear(), calendarModel.getMonth(), calendarModel.getDay());
+    }
+
+    /**********************************************************************************************/
+
+    private final static Calendar mCalendar = Calendar.getInstance();
+
+    public final static void resetData() {
+        mCalendar.clear();
+    }
+
+    public final static Calendar getCalendar() {
+        mCalendar.setTime(new Date());
+        return mCalendar;
+    }
+
+    public final static String getYear() {
+        mCalendar.setTime(new Date());
+        return String.valueOf(mCalendar.get(Calendar.YEAR));
+    }
+
+    public final static String getMonth() {
+        mCalendar.setTime(new Date());
+        int i = mCalendar.get(Calendar.MONTH) + 1;
+        if (i < 10) {
+            return "0" + i;
+        } else {
+            return String.valueOf(i);
+        }
+    }
+
+    public final static String getDay() {
+        mCalendar.setTime(new Date());
+        int i = mCalendar.get(Calendar.DATE);
+        if (i < 10) {
+            return "0" + i;
+        } else {
+            return String.valueOf(i);
+        }
     }
 }

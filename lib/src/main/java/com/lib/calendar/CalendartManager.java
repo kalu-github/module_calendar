@@ -48,9 +48,9 @@ final class CalendartManager extends LinearLayoutManager implements RecyclerView
             case RecyclerView.SCROLL_STATE_IDLE:
                 View viewIdle = mPagerSnapHelper.findSnapView(this);
                 int positionIdle = getPosition(viewIdle);
-              //  Log.e("onScrollStateChanged", "count = " + getChildCount() + ", positionIdle = " + positionIdle);
+//                Log.e("rili", "onScrollStateChanged ==> count = " + getChildCount() + ", positionIdle = " + positionIdle);
                 if (mOnPagerChangeListener == null || getChildCount() != 1) break;
-                mOnPagerChangeListener.onPageSelect(positionIdle, positionIdle == 0, positionIdle == (getItemCount() - 1));
+                mOnPagerChangeListener.onPageSelect(positionIdle, positionIdle == 0, positionIdle == (getItemCount() - 1), false);
                 break;
             case RecyclerView.SCROLL_STATE_DRAGGING:
                 View viewDrag = mPagerSnapHelper.findSnapView(this);
@@ -67,11 +67,13 @@ final class CalendartManager extends LinearLayoutManager implements RecyclerView
     @Override
     public void onLayoutCompleted(RecyclerView.State state) {
         super.onLayoutCompleted(state);
+//        Log.e("rili","onLayoutCompleted");
+
         if (null == mOnPagerChangeListener) return;
         mOnPagerChangeListener.onPageFinish();
         View viewIdle = mPagerSnapHelper.findSnapView(this);
         int positionIdle = getPosition(viewIdle);
-        mOnPagerChangeListener.onPageSelect(positionIdle, true, false);
+        mOnPagerChangeListener.onPageSelect(positionIdle, true, false, true);
     }
 
     @Override
@@ -104,7 +106,7 @@ final class CalendartManager extends LinearLayoutManager implements RecyclerView
 
         void onPageDetach(boolean isNext, int position);
 
-        void onPageSelect(int position, boolean isFirst, boolean isLast);
+        void onPageSelect(int position, boolean isFirst, boolean isLast, boolean isInit);
 
         void onPageFinish();
     }

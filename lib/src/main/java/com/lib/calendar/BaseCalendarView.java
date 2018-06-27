@@ -2,11 +2,13 @@ package com.lib.calendar;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -15,28 +17,13 @@ import java.util.List;
  */
 public abstract class BaseCalendarView extends View {
 
+    private int daySelect, dayCur;
+    private int yearSelect, yearCur;
+    private int monthSelect, monthCur;
     protected final ArrayList<CalendarModel> mItems = new ArrayList<>();
-
-    protected final CalendarModel mCalendarModelSelect = new CalendarModel();
-    protected final CalendarModel mCalendarModelToday = new CalendarModel();
-
-    {
-        final java.util.Calendar instance = java.util.Calendar.getInstance();
-        mCalendarModelToday.setYear(instance.get(java.util.Calendar.YEAR));
-        mCalendarModelToday.setMonth(instance.get(java.util.Calendar.MONTH) + 1);
-        mCalendarModelToday.setDay(instance.get(java.util.Calendar.DAY_OF_MONTH));
-        CalendarUtil.setupLunarCalendar(mCalendarModelToday);
-    }
 
     public BaseCalendarView(Context context) {
         super(context);
-    }
-
-    final void setSelectCalendar(int year, int month, int day) {
-        mCalendarModelSelect.setYear(year);
-        mCalendarModelSelect.setMonth(month);
-        mCalendarModelSelect.setDay(day);
-        CalendarUtil.setupLunarCalendar(mCalendarModelSelect);
     }
 
     /********************************************************************/
@@ -87,8 +74,16 @@ public abstract class BaseCalendarView extends View {
                 calendarModel.setPress(false);
                 postInvalidate();
 
+                final int years = calendarModel.getYear();
+                final int months = calendarModel.getMonth();
+                final int day = calendarModel.getDay();
+                final Calendar calendar = CalendarUtil.getCalendar();
+                calendar.set(Calendar.YEAR, years);
+                calendar.set(Calendar.MONTH, months - 1);//Java月份才0开始算
+                final int maxdays = calendar.getActualMaximum(Calendar.DATE);
+
                 if (null != mOnCalendarChangeListener) {
-                    mOnCalendarChangeListener.onCalendarChange(calendarModel.getYear(), calendarModel.getMonth(), calendarModel.getDay(), true);
+                    mOnCalendarChangeListener.onCalendarChange(years, months, day, maxdays, true, false);
                 }
                 setTag(null);
             }
@@ -161,12 +156,23 @@ public abstract class BaseCalendarView extends View {
 
     /***************************************************************************************************************************/
 
-    final void setDate(int mYear, int mMonth) {
+    final void setDate(int mYear, int mMonth, int mDay) {
+        yearSelect = mYear;
+        monthSelect = mMonth;
+        daySelect = mDay;
+    }
 
-        final java.util.Calendar news = java.util.Calendar.getInstance();
+    final void calcuDate(int mYear, int mMonth) {
+        Log.e("calcuDate", "year = " + mYear + ", month = " + mMonth);
+
+        yearCur = Integer.parseInt(CalendarUtil.getYear());
+        monthCur = Integer.parseInt(CalendarUtil.getMonth());
+        dayCur = Integer.parseInt(CalendarUtil.getDay());
+
+        final Calendar news = Calendar.getInstance();
 
         news.set(mYear, mMonth - 1, 1);
-        int mPreDiff = news.get(java.util.Calendar.DAY_OF_WEEK) - 1;
+        int mPreDiff = news.get(Calendar.DAY_OF_WEEK) - 1;
         int mDayCount = CalendarUtil.getMonthDaysCount(mYear, mMonth);
         news.set(mYear, mMonth - 1, mDayCount);
 
@@ -227,11 +233,11 @@ public abstract class BaseCalendarView extends View {
             CalendarUtil.setupLunarCalendar(calendarModelDate);
 
             // 今天日子
-            if (year == mCalendarModelToday.getYear() && month == mCalendarModelToday.getMonth() && day == mCalendarModelToday.getDay()) {
+            if (year == yearCur && month == monthCur && day == dayCur) {
                 calendarModelDate.setToady(true);
             }
             // 选中日子
-            if (year == mCalendarModelSelect.getYear() && month == mCalendarModelSelect.getMonth() && day == mCalendarModelSelect.getDay()) {
+            if (year == yearSelect && month == monthSelect && day == daySelect) {
                 calendarModelDate.setSelect(true);
             }
             mItems.add(calendarModelDate);
@@ -241,6 +247,25 @@ public abstract class BaseCalendarView extends View {
 
     public List<CalendarModel> getModelList() {
         return mItems;
+    }
+
+
+    public int getYear() {
+        return mItems.get(mItems.size() / 2).getYear();
+    }
+
+    public int getMonth() {
+        return mItems.get(mItems.size() / 2).getMonth();
+    }
+
+    public int getDay() {
+        final int year = mItems.get(mItems.size() / 2).getYear();
+        final int month = mItems.get(mItems.size() / 2).getMonth();
+        final Calendar calendar = CalendarUtil.getCalendar();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month - 1);//Java月份才0开始算
+        int dateOfMonth = calendar.getActualMaximum(Calendar.DATE);
+        return dateOfMonth;
     }
 
     /***************************************************************************************************************************/

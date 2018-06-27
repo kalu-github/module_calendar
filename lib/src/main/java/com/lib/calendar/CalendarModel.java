@@ -190,6 +190,18 @@ public final class CalendarModel implements Serializable {
         return year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
     }
 
+    public boolean isEqual(int years, int months, int days) {
+
+        if (years != year)
+            return false;
+        if (months != month)
+            return false;
+        if (days != day)
+            return false;
+        isSelect = true;
+        return true;
+    }
+
     /*******************************************************/
 
     private SchemeModel schemeModel = null;
