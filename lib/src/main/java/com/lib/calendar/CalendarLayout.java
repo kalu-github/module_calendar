@@ -107,7 +107,6 @@ public final class CalendarLayout extends LinearLayout {
 
     public void notifyDataSetChanged(int year, @IntRange(from = 1, to = 12) int month, int day) {
 
-        // 2.日历
         final RecyclerView recyclerView = new RecyclerView(getContext().getApplicationContext());
         recyclerView.setBackgroundColor(Color.WHITE);
         LayoutParams paramsRecyclerView = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -129,7 +128,6 @@ public final class CalendarLayout extends LinearLayout {
         if (year == minYear) {
             final int position = month - 1;
             mPagerLayoutManager.scrollToPositionWithOffset(position, 0);
-            mPagerLayoutManager.setStackFromEnd(true);
         } else {
             int position;
             if (minYearMonth == 1) {
@@ -138,7 +136,6 @@ public final class CalendarLayout extends LinearLayout {
                 position = 12 * (year - minYear - 1) + (12 - minYearMonth) + month - 1;
             }
             mPagerLayoutManager.scrollToPositionWithOffset(position, 0);
-            mPagerLayoutManager.setStackFromEnd(true);
         }
 
         if (null != mOnCalendarChangeListener)
@@ -256,11 +253,14 @@ public final class CalendarLayout extends LinearLayout {
 
             final MonthView view = (MonthView) holder.itemView;
             view.setDate(selectYear, selectMonth, selectDay);
-            int year = minYear + ((position + 1) / 12);
-            int month = (position + 1) % 12;
-            if(month == 0){
+
+            final int number1 = (position + minYearMonth) / 12;
+            final int number2 = (position + minYearMonth) % 12;
+            int year = minYear + number1;
+            int month = number2;
+            if (month == 0) {
                 month = 12;
-                year = year-1;
+                year = year - 1;
             }
             view.calcuDate(year, month);
         }
@@ -274,13 +274,13 @@ public final class CalendarLayout extends LinearLayout {
             }
 
             if (maxYear < minYear)
-                return 0;
+                return 1;
 
             if (minYearMonth < 1)
-                return 0;
+                return 1;
 
             if (maxYearMonth > 12)
-                return 0;
+                return 1;
 
             final int count = ((maxYear - minYear) - 1) * 12 + (12 - minYearMonth + 1) + maxYearMonth;
             setTag(count);

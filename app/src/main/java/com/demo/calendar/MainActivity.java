@@ -16,7 +16,7 @@ public class MainActivity extends Activity {
 
         final TextView date = findViewById(R.id.date);
         final CalendarLayout calendar = findViewById(R.id.calendar);
-        calendar.setRange(2017, 1, 2018, 6);
+        calendar.setRange(2016, 5, 2018, 6);
         calendar.notifyDataSetChanged(2018, 6, 2);
 
         calendar.setOnCalendarChangeListener(new CalendarLayout.OnCalendarChangeListener() {
