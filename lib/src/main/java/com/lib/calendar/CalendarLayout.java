@@ -119,6 +119,7 @@ public final class CalendarLayout extends RecyclerView {
         if (maxYear < minYear || minYearMonth < 1 || maxYearMonth > 12) {
             throw new RuntimeException("初始化参数写错了");
         }
+        mPagerLayoutManager.setStackFromEnd(true);
         setLayoutManager(mPagerLayoutManager);
         setAdapter(new CalendarAdapter());
 
@@ -130,11 +131,11 @@ public final class CalendarLayout extends RecyclerView {
             final int position = month - 1;
             mPagerLayoutManager.scrollToPositionWithOffset(position, 0);
         } else {
-            int position = 12 * (year - minYear - 1) + (1 - minYearMonth) + month;
+            int position = 12 * (year - minYear) - minYearMonth + month;
             mPagerLayoutManager.scrollToPositionWithOffset(position, 0);
         }
 
-        if (null != mOnCalendarChangeListener)
+        if (null == mOnCalendarChangeListener)
             return;
 
         mPagerLayoutManager.setOnPagerChangeListener(new CalendartManager.OnPagerChangeListener() {
