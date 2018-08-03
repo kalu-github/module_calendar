@@ -3,6 +3,7 @@ package com.demo.calendar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +23,9 @@ public class MainActivity extends Activity {
 
         calendar.setOnCalendarChangeListener(new CalendarLayout.OnCalendarChangeListener() {
             @Override
-            public void onCalendarChange(int year, int month, int day, int maxDay, boolean isClick, boolean isInflate) {
+            public void onChange(int year, int month, int day, int maxDay, boolean isClick, boolean isClickBefore) {
+                Log.e("jiji", "year = " + year + ", month = " + month + ", day = " + day + ", maxDay = " + maxDay + ", isClick = " + isClick + ", isClickBefore = " + isClickBefore);
+
                 date.setText(year + "年" + month + "月");
                 if (isClick) {
                     Toast.makeText(getApplicationContext(), "点击:" + year + "-" + month + "-" + day, Toast.LENGTH_SHORT).show();

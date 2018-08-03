@@ -1,6 +1,7 @@
 package com.lib.calendar;
 
 import android.content.Context;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
@@ -25,19 +26,16 @@ final class MonthView extends BaseCalendarView {
             return;
 
         // 1.底部圆点
-        if (schemeModel.isWarning()) {
-            final Paint dotPaint = CalendarPaint.getBackgroundPaint(CalendarPaint.RED);
-            canvas.drawCircle(left + itemWidth * 0.5f, top + itemHeight * 0.95f, mDotRadius, dotPaint);
-        }else{
-            final Paint dotPaint = CalendarPaint.getBackgroundPaint(CalendarPaint.GREEN);
+        if (schemeModel.isSignSymbol()) {
+            final Paint dotPaint = CalendarPaint.getBackgroundPaint(schemeModel.getSignSymbolColor());
             canvas.drawCircle(left + itemWidth * 0.5f, top + itemHeight * 0.95f, mDotRadius, dotPaint);
         }
         // 2.右上角文字
-        if (schemeModel.isDiagnose()) {
+        if (schemeModel.isSignText()) {
             final Paint lunarPaint = CalendarPaint.getTextPaint(CalendarPaint.RED, 24f);
             lunarPaint.setFakeBoldText(true);
             final float font = (lunarPaint.getFontMetrics().bottom - lunarPaint.getFontMetrics().top) * 0.3f;
-            canvas.drawText(schemeModel.getScheme(), left + itemWidth * 0.82f, top + itemHeight * 0.18f + font, lunarPaint);
+            canvas.drawText(schemeModel.getSignText(), left + itemWidth * 0.82f, top + itemHeight * 0.18f + font, lunarPaint);
         }
     }
 
@@ -72,11 +70,13 @@ final class MonthView extends BaseCalendarView {
 
         if (calendarModel.isToady()) {
             final float radius = Math.min(width, height) * 0.38f;
-            final Paint dotPaint = CalendarPaint.getBackgroundPaint(CalendarPaint.GREEN);
-            canvas.drawCircle(cx, cy, radius, dotPaint);
-        }else if (calendarModel.isSelect()) {
-            final float radius = Math.min(width, height) * 0.38f;
             final Paint dotPaint = CalendarPaint.getBackgroundPaint(CalendarPaint.GREY);
+            dotPaint.setMaskFilter(new BlurMaskFilter(24, BlurMaskFilter.Blur.INNER));
+            canvas.drawCircle(cx, cy, radius, dotPaint);
+        } else if (calendarModel.isSelect()) {
+            final float radius = Math.min(width, height) * 0.38f;
+            final Paint dotPaint = CalendarPaint.getBackgroundPaint(CalendarPaint.GREEN);
+            dotPaint.setMaskFilter(new BlurMaskFilter(24, BlurMaskFilter.Blur.INNER));
             canvas.drawCircle(cx, cy, radius, dotPaint);
         }
 //        else if (calendarModel.isPress()) {

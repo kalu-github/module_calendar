@@ -202,12 +202,24 @@ public final class CalendarModel implements Serializable {
         return true;
     }
 
+    public boolean isBefore() {
+        String months = String.valueOf(month);
+        if (months.length() == 1) {
+            months = "0" + months;
+        }
+        String days = String.valueOf(day);
+        if (days.length() == 1) {
+            days = "0" + days;
+        }
+        return Integer.parseInt(String.valueOf(year) + months + days) <= Integer.parseInt(CalendarUtil.getYears() + CalendarUtil.getMonths() + CalendarUtil.getDays());
+    }
+
     /*******************************************************/
 
     private SchemeModel schemeModel = null;
 
     public boolean isSchemes() {
-        return (null != schemeModel && (schemeModel.isDiagnose() || schemeModel.isWarning()));
+        return (null != schemeModel && (schemeModel.isSignSymbol() || schemeModel.isSignText()));
     }
 
     public void setSchemeModel(SchemeModel schemeModel) {
@@ -222,10 +234,27 @@ public final class CalendarModel implements Serializable {
 
         String getKey();
 
-        boolean isDiagnose();
+        /**
+         * 符号标记
+         *
+         * @return
+         */
+        boolean isSignSymbol();
 
-        boolean isWarning();
+        /**
+         * 符号标记颜色
+         *
+         * @return
+         */
+        int getSignSymbolColor();
 
-        String getScheme();
+        /**
+         * 文字标记
+         *
+         * @return
+         */
+        boolean isSignText();
+
+        String getSignText();
     }
 }

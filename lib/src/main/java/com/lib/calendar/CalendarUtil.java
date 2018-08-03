@@ -384,12 +384,12 @@ final class CalendarUtil {
      * @return 不需要多余行的高度
      */
     public static int getMonthViewHeight(int year, int month, int itemHeight) {
-        java.util.Calendar date = java.util.Calendar.getInstance();
+        Calendar date = Calendar.getInstance();
         date.set(year, month - 1, 1);
-        int firstDayOfWeek = date.get(java.util.Calendar.DAY_OF_WEEK) - 1;//月第一天为星期几,星期天 == 0
+        int firstDayOfWeek = date.get(Calendar.DAY_OF_WEEK) - 1;//月第一天为星期几,星期天 == 0
         int mDaysCount = getMonthDaysCount(year, month);
         date.set(year, month - 1, mDaysCount);
-        int mLastCount = date.get(java.util.Calendar.DAY_OF_WEEK) - 1;//月最后一天为星期几,星期天 == 0
+        int mLastCount = date.get(Calendar.DAY_OF_WEEK) - 1;//月最后一天为星期几,星期天 == 0
         int nextMonthDaysOffset = 6 - mLastCount;//下个月的日偏移天数
         return (firstDayOfWeek + mDaysCount + nextMonthDaysOffset) / 7 * itemHeight;
     }
@@ -420,9 +420,9 @@ final class CalendarUtil {
      * @return 获取某天在该月的第几周
      */
     public static int getWeekFromDayInMonth(CalendarModel calendarModel) {
-        java.util.Calendar date = java.util.Calendar.getInstance();
+        Calendar date = Calendar.getInstance();
         date.set(calendarModel.getYear(), calendarModel.getMonth() - 1, 1);
-        int diff = date.get(java.util.Calendar.DAY_OF_WEEK) - 1;//该月第一天为星期几,星期天 == 0，也就是偏移量
+        int diff = date.get(Calendar.DAY_OF_WEEK) - 1;//该月第一天为星期几,星期天 == 0，也就是偏移量
         return (calendarModel.getDay() + diff - 1) / 7 + 1;
     }
 
@@ -433,9 +433,9 @@ final class CalendarUtil {
      * @return 返回某个日期是星期几
      */
     public static int getWeekFormCalendar(CalendarModel calendarModel) {
-        java.util.Calendar date = java.util.Calendar.getInstance();
+        Calendar date = Calendar.getInstance();
         date.set(calendarModel.getYear(), calendarModel.getMonth() - 1, calendarModel.getDay());
-        return date.get(java.util.Calendar.DAY_OF_WEEK) - 1;
+        return date.get(Calendar.DAY_OF_WEEK) - 1;
     }
 
 
@@ -447,9 +447,9 @@ final class CalendarUtil {
      * @return 第几个月
      */
     public static int getMonthFromWeekFirstDayInYear(int year, int weekInYear) {
-        java.util.Calendar date = java.util.Calendar.getInstance();
+        Calendar date = Calendar.getInstance();
         date.set(year, 0, 1);
-        int diff = date.get(java.util.Calendar.DAY_OF_WEEK) - 1;//1月第一天为星期几,星期天 == 0，也就是偏移量
+        int diff = date.get(Calendar.DAY_OF_WEEK) - 1;//1月第一天为星期几,星期天 == 0，也就是偏移量
         int count = 0;
         int diy = (weekInYear - 1) * 7 - diff + 1;
         for (int i = 1; i <= 12; i++) {
@@ -471,11 +471,11 @@ final class CalendarUtil {
     public static int getWeekCountBetweenYearAndYear(int minYear, int maxYear) {
         if (minYear > maxYear)
             return 0;
-        java.util.Calendar date = java.util.Calendar.getInstance();
+        Calendar date = Calendar.getInstance();
         date.set(minYear, 0, 1);//1月1日
-        int preDiff = date.get(java.util.Calendar.DAY_OF_WEEK) - 1;//1月第一天为星期几,星期天 == 0，也就是偏移量
+        int preDiff = date.get(Calendar.DAY_OF_WEEK) - 1;//1月第一天为星期几,星期天 == 0，也就是偏移量
         date.set(maxYear, 11, 31);//12月31日
-        int nextDiff = 7 - date.get(java.util.Calendar.DAY_OF_WEEK);//1月第一天为星期几,星期天 == 0，也就是偏移量
+        int nextDiff = 7 - date.get(Calendar.DAY_OF_WEEK);//1月第一天为星期几,星期天 == 0，也就是偏移量
         int count = preDiff + nextDiff;
         for (int i = minYear; i <= maxYear; i++) {
             count += getYearCount(i);
@@ -484,7 +484,7 @@ final class CalendarUtil {
     }
 
     public static boolean isCalendarInRange(CalendarModel calendarModel, int minYear, int minYearMonth, int maxYear, int maxYearMonth) {
-        java.util.Calendar c = java.util.Calendar.getInstance();
+        Calendar c = Calendar.getInstance();
         c.set(minYear, minYearMonth - 1, 1);
         long minTime = c.getTimeInMillis();
         c.set(maxYear, maxYearMonth - 1, getMonthDaysCount(maxYear, maxYearMonth));
@@ -1010,10 +1010,10 @@ final class CalendarUtil {
     }
 
     public static int getWeekFromCalendarBetweenYearAndYear(CalendarModel calendarModel, int minYear, int minYearMonth) {
-        java.util.Calendar date = java.util.Calendar.getInstance();
+        Calendar date = Calendar.getInstance();
         date.set(minYear, 0, 1);//1月1日
         long firstTime = date.getTimeInMillis();//获得起始时间戳
-        int preDiff = date.get(java.util.Calendar.DAY_OF_WEEK) - 1;//1月第一天为星期几,星期天 == 0，也就是偏移量
+        int preDiff = date.get(Calendar.DAY_OF_WEEK) - 1;//1月第一天为星期几,星期天 == 0，也就是偏移量
         date.set(calendarModel.getYear(), calendarModel.getMonth() - 1, calendarModel.getWeek() == 0 ? calendarModel.getDay() + 1 : calendarModel.getDay());
         long curTime = date.getTimeInMillis();//给定时间戳
         int c = (int) ((curTime - firstTime) / ONE_DAY);
@@ -1026,13 +1026,13 @@ final class CalendarUtil {
         if (minYearMonth == 1) {
             return -1;
         }
-        java.util.Calendar date = java.util.Calendar.getInstance();
+        Calendar date = Calendar.getInstance();
         date.set(minYear, 0, 1);//1月1日
         long firstTime = date.getTimeInMillis();//获得起始时间戳
-        int preDiff = date.get(java.util.Calendar.DAY_OF_WEEK) - 1;//1月第一天为星期几,星期天 == 0，也就是偏移量
+        int preDiff = date.get(Calendar.DAY_OF_WEEK) - 1;//1月第一天为星期几,星期天 == 0，也就是偏移量
         date.set(minYear, minYearMonth - 1, 1);
         long minTime = date.getTimeInMillis();//获得时间戳
-        int nextDiff = date.get(java.util.Calendar.DAY_OF_WEEK) - 1;//minYearMonth月第一天为星期几,星期天 == 0，也就是偏移量
+        int nextDiff = date.get(Calendar.DAY_OF_WEEK) - 1;//minYearMonth月第一天为星期几,星期天 == 0，也就是偏移量
         int c = (int) ((minTime - firstTime) / ONE_DAY) - 1;
         int count = preDiff + c - nextDiff;
         return count / 7;
@@ -1239,21 +1239,22 @@ final class CalendarUtil {
 
     private final static Calendar mCalendar = Calendar.getInstance();
 
-    public final static void resetData() {
-        mCalendar.clear();
-    }
-
     public final static Calendar getCalendar() {
         mCalendar.setTime(new Date());
         return mCalendar;
     }
 
-    public final static String getYear() {
+    public final static String getYears() {
         mCalendar.setTime(new Date());
         return String.valueOf(mCalendar.get(Calendar.YEAR));
     }
 
-    public final static String getMonth() {
+    public final static int getYear() {
+        mCalendar.setTime(new Date());
+        return mCalendar.get(Calendar.YEAR);
+    }
+
+    public final static String getMonths() {
         mCalendar.setTime(new Date());
         int i = mCalendar.get(Calendar.MONTH) + 1;
         if (i < 10) {
@@ -1263,7 +1264,12 @@ final class CalendarUtil {
         }
     }
 
-    public final static String getDay() {
+    public final static int getMonth() {
+        mCalendar.setTime(new Date());
+        return mCalendar.get(Calendar.MONTH) + 1;
+    }
+
+    public final static String getDays() {
         mCalendar.setTime(new Date());
         int i = mCalendar.get(Calendar.DATE);
         if (i < 10) {
@@ -1271,5 +1277,55 @@ final class CalendarUtil {
         } else {
             return String.valueOf(i);
         }
+    }
+
+    public final static int getDay() {
+        mCalendar.setTime(new Date());
+        return mCalendar.get(Calendar.DATE);
+    }
+
+    public final static String getMinutes() {
+        mCalendar.setTime(new Date());
+        int i = mCalendar.get(Calendar.MINUTE);
+        if (i < 10) {
+            return "0" + i;
+        } else {
+            return String.valueOf(i);
+        }
+    }
+
+    public final static int getMinute() {
+        mCalendar.setTime(new Date());
+        return mCalendar.get(Calendar.MINUTE);
+    }
+
+    public final static String getHours() {
+        mCalendar.setTime(new Date());
+        int i = mCalendar.get(Calendar.HOUR_OF_DAY);
+        if (i < 10) {
+            return "0" + i;
+        } else {
+            return String.valueOf(i);
+        }
+    }
+
+    public final static int getHour() {
+        mCalendar.setTime(new Date());
+        return mCalendar.get(Calendar.HOUR_OF_DAY);
+    }
+
+    public final static String getSeconds() {
+        mCalendar.setTime(new Date());
+        int i = mCalendar.get(Calendar.SECOND);
+        if (i < 10) {
+            return "0" + i;
+        } else {
+            return String.valueOf(i);
+        }
+    }
+
+    public final static int getSecond() {
+        mCalendar.setTime(new Date());
+        return mCalendar.get(Calendar.SECOND);
     }
 }

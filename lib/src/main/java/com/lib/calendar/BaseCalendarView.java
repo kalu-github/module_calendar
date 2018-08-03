@@ -2,7 +2,6 @@ package com.lib.calendar;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,9 +16,10 @@ import java.util.List;
  */
 public abstract class BaseCalendarView extends View {
 
-    private int daySelect, dayCur;
-    private int yearSelect, yearCur;
-    private int monthSelect, monthCur;
+    private int maxDay = 0;
+    private int daySelect;
+    private int yearSelect;
+    private int monthSelect;
     protected final ArrayList<CalendarModel> mItems = new ArrayList<>();
 
     public BaseCalendarView(Context context) {
@@ -54,7 +54,8 @@ public abstract class BaseCalendarView extends View {
             int indexY = (int) ((int) e.getY() / (getHeight() / 6f));
             int number = (int) (indexY * 7 + indexX);// 选择项
 
-            if (number > 0 && number < mItems.size()) {
+            if (number >= 0 && number < mItems.size()) {
+
                 final CalendarModel calendarModel = mItems.get(number);
                 calendarModel.setPress(true);
                 setTag(calendarModel);
@@ -77,13 +78,9 @@ public abstract class BaseCalendarView extends View {
                 final int years = calendarModel.getYear();
                 final int months = calendarModel.getMonth();
                 final int day = calendarModel.getDay();
-                final Calendar calendar = CalendarUtil.getCalendar();
-                calendar.set(Calendar.YEAR, years);
-                calendar.set(Calendar.MONTH, months - 1);//Java月份才0开始算
-                final int maxdays = calendar.getActualMaximum(Calendar.DATE);
 
                 if (null != mOnCalendarChangeListener) {
-                    mOnCalendarChangeListener.onCalendarChange(years, months, day, maxdays, true, false);
+                    mOnCalendarChangeListener.onChange(years, months, day, maxDay, true, calendarModel.isBefore());
                 }
                 setTag(null);
             }
@@ -163,11 +160,12 @@ public abstract class BaseCalendarView extends View {
     }
 
     final void calcuDate(int mYear, int mMonth) {
-        Log.e("calcuDate", "year = " + mYear + ", month = " + mMonth);
+        // Log.e("calcuDate", "year = " + mYear + ", month = " + mMonth);
 
-        yearCur = Integer.parseInt(CalendarUtil.getYear());
-        monthCur = Integer.parseInt(CalendarUtil.getMonth());
-        dayCur = Integer.parseInt(CalendarUtil.getDay());
+        final Calendar calendar = CalendarUtil.getCalendar();
+        calendar.set(Calendar.YEAR, mYear);
+        calendar.set(Calendar.MONTH, mMonth - 1);//Java月份才0开始算
+        maxDay = calendar.getActualMaximum(Calendar.DATE);
 
         final Calendar news = Calendar.getInstance();
 
@@ -202,6 +200,10 @@ public abstract class BaseCalendarView extends View {
         int nextDay = 1;
         mItems.clear();
 
+        final int tempYear = CalendarUtil.getYear();
+        final int tempMonth = CalendarUtil.getMonth();
+        final int tempDay = CalendarUtil.getDay();
+
         // 每页显示42个日期
         for (int i = 0; i < 42; i++) {
             final CalendarModel calendarModelDate = new CalendarModel();
@@ -233,7 +235,7 @@ public abstract class BaseCalendarView extends View {
             CalendarUtil.setupLunarCalendar(calendarModelDate);
 
             // 今天日子
-            if (year == yearCur && month == monthCur && day == dayCur) {
+            if (year == tempYear && month == tempMonth && day == tempDay) {
                 calendarModelDate.setToady(true);
             }
             // 选中日子
